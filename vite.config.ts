@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => ({
       overlay: false,
     },
   },
-  base: '/xerox-printing/',   // 👈 repository name
+ 
   plugins: [react(),
      mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
