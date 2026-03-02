@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+
+import { Link,useNavigate } from 'react-router-dom';
 import {
   Upload, X, FileText, Image, File, AlertCircle, CheckCircle,
   ArrowRight, ArrowLeft, Calculator, Package, CreditCard, Info, Plus, Trash2, Copy, Layers
@@ -10,6 +11,8 @@ import {
 } from '@/lib/pricingData';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+
+
 
 const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
 const ALLOWED_TYPES = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/jpg', 'image/png'];
@@ -41,7 +44,7 @@ const createNewItem = (): OrderItem => ({
   id: Math.random().toString(36).slice(2),
   files: [],
   pages: 100,
-  copies: 1,
+  copies: 10,
   paperSize: 'A4',
   paperType: '70gsm_normal',
   printColor: 'bw',
@@ -52,12 +55,15 @@ const createNewItem = (): OrderItem => ({
 });
 
 export default function OrderPage() {
+
+
+  
   const [orderMode, setOrderMode] = useState<'single' | 'bulk'>('single');
   const [items, setItems] = useState<OrderItem[]>([createNewItem()]);
   const [activeItemIndex, setActiveItemIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [deliveryType, setDeliveryType] = useState<'pickup' | 'courier'>('pickup');
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2 | 3| 4>(1);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
@@ -67,6 +73,15 @@ export default function OrderPage() {
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+
+
+  
+const navigate = useNavigate();
+
+
+const [termsAccepted, setTermsAccepted] = useState(false);
+
 
   const activeItem = items[activeItemIndex];
 
@@ -178,13 +193,35 @@ export default function OrderPage() {
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <label className="block text-sm font-semibold text-foreground mb-1">Number of Pages</label>
-        <input type="number" min={1} value={item.pages} onChange={(e) => updateItem(itemIndex, { pages: Math.max(1, parseInt(e.target.value) || 1) })}
-          className="w-full px-3 py-2.5 border border-border rounded-md text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" />
+  <input
+  type="number"
+  min={1}
+  value={item.pages === 0 ? '' : item.pages}
+  placeholder="Enter pages"
+  onChange={(e) => {
+    const value = e.target.value;
+
+    if (value === '') {
+      updateItem(itemIndex, { pages: 0 }); // allow empty temporarily
+    } else {
+      updateItem(itemIndex, { pages: Math.max(1, parseInt(value)) });
+    }
+  }}
+  className="w-full px-3 py-2.5 border border-border rounded-md text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+/>
       </div>
       <div>
         <label className="block text-sm font-semibold text-foreground mb-1">Number of Copies</label>
-        <input type="number" min={1} value={item.copies} onChange={(e) => updateItem(itemIndex, { copies: Math.max(1, parseInt(e.target.value) || 1) })}
-          className="w-full px-3 py-2.5 border border-border rounded-md text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" />
+       <input
+  type="number"
+  min={1}
+  value={item.copies === 1 ? '' : item.copies}  // hide 1
+  placeholder="Enter copies"
+  onChange={(e) =>
+    updateItem(itemIndex, { copies: Math.max(1, parseInt(e.target.value) || 1) })
+  }
+  className="w-full px-3 py-2.5 border border-border rounded-md text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+/>
       </div>
       <div>
         <label className="block text-sm font-semibold text-foreground mb-1">Paper Size</label>
@@ -250,102 +287,307 @@ export default function OrderPage() {
     </div>
   );
 
+  
+// Prepare clean, serializable data
+const prepareOrderDataForCart = () => {
+  const sanitizedItems = items.map(item => ({
+    id: item.id,
+    pages: item.pages,
+    copies: item.copies,
+    paperSize: item.paperSize,
+    paperType: item.paperType,
+    printColor: item.printColor,
+    printSide: item.printSide,
+    bindingType: item.bindingType,
+    lamination: item.lamination,
+    instructions: item.instructions,
+    files: item.files.map(f => ({
+      id: f.id,
+      name: f.file.name,
+      size: f.file.size,
+      type: f.file.type,
+      status: f.status,
+      // Do NOT pass actual File — not serializable
+      // If uploaded → pass url / key instead
+    })),
+  }));
+
+  return {
+    item: sanitizedItems,           // renamed to match your cart expectation
+    orderMode,
+    deliveryType,
+    customer: {
+      name,
+      phone,
+      address: deliveryType === 'courier' ? address : undefined,
+      pincode: deliveryType === 'courier' ? pincode : undefined,
+      city: deliveryType === 'courier' ? city : undefined,
+      state: deliveryType === 'courier' ? state : undefined,
+    },
+    // Optional: pass pre-calculated totals if you want
+    totalPrintingCost,
+    totalGst,
+    totalWithDelivery,
+    // itemPrices,           // ← if needed in cart
+  };
+};
+
+const handleContinue = () => {
+  if (!name.trim() || !phone.trim()) {
+    alert("Please fill name and phone");
+    return;
+  }
+  if (deliveryType === 'courier' && (!address || !pincode || !city || !state)) {
+    alert("Please complete delivery address");
+    return;
+  }
+
+  const orderData = prepareOrderDataForCart();
+
+  navigate('/cart', { state: orderData });
+};
+
+
+
+
   // Render file upload for a given item
-  const renderFileUpload = (item: OrderItem, itemIndex: number) => (
-    <>
-      <div
-        className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-200 ${
-          isDragging && activeItemIndex === itemIndex ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-muted/30'
-        }`}
-        onClick={() => { setActiveItemIndex(itemIndex); fileInputRef.current?.click(); }}
-        onDragOver={(e) => { e.preventDefault(); setActiveItemIndex(itemIndex); setIsDragging(true); }}
-        onDragLeave={() => setIsDragging(false)}
-        onDrop={(e) => { setActiveItemIndex(itemIndex); handleDrop(e); }}
-      >
-        <Upload className={`h-10 w-10 mx-auto mb-3 transition-colors duration-200 ${isDragging && activeItemIndex === itemIndex ? 'text-primary' : 'text-muted-foreground'}`} />
-        <p className="font-semibold text-foreground mb-1">Drag & drop files here</p>
-        <p className="text-muted-foreground text-sm mb-3">or click to browse</p>
-        <p className="text-xs text-muted-foreground">Supported: PDF, DOC, DOCX, JPEG, JPG, PNG • Max 500MB per file</p>
-      </div>
 
-      {item.files.length > 0 && (
-        <div className="mt-4 space-y-2">
-          {item.files.map((f) => (
-            <div key={f.id} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
-              {getFileIcon(f.file)}
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">{f.file.name}</p>
-                <p className="text-xs text-muted-foreground">{(f.file.size / 1024 / 1024).toFixed(2)} MB</p>
-                {f.status === 'uploading' && (
-                  <div className="mt-1 h-1 bg-muted rounded-full overflow-hidden">
-                    <div className="h-full bg-primary rounded-full transition-all duration-300" style={{ width: `${f.progress}%` }} />
-                  </div>
-                )}
-              </div>
-              {f.status === 'done' && <CheckCircle className="h-4 w-4 text-green-500 shrink-0" />}
-              {f.status === 'error' && <AlertCircle className="h-4 w-4 text-destructive shrink-0" />}
-              <button onClick={() => removeFile(itemIndex, f.id)} className="p-1 hover:bg-muted rounded transition-colors">
-                <X className="h-4 w-4 text-muted-foreground" />
-              </button>
-            </div>
-          ))}
+const renderFileUpload = (item: OrderItem, itemIndex: number) => (
+  <div className="space-y-6">
+    {/* Terms acceptance area – disappears after check */}
+    <div 
+      className={`transition-all duration-300 ease-in-out overflow-hidden ${
+        termsAccepted ? 'max-h-0 opacity-0' : 'max-h-[400px] opacity-100'
+      }`}
+    >
+      <div className="bg-amber-50/60 border border-amber-300 rounded-xl p-5 mb-4">
+        <div className="flex items-start gap-4">
+          <input
+            type="checkbox"
+            id="terms-accept"
+            checked={termsAccepted}
+            onChange={(e) => setTermsAccepted(e.target.checked)}
+            className="mt-1.5 h-5 w-5 accent-primary rounded border-border focus:ring-primary cursor-pointer"
+          />
+          <label 
+            htmlFor="terms-accept" 
+            className="text-sm leading-relaxed text-foreground/90 cursor-pointer select-none"
+          >
+            I agree to the{' '}
+            <Link
+              to="/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary font-medium hover:underline"
+            >
+              Terms & Conditions
+            </Link>
+            . I confirm that uploaded files do not violate copyrights, contain illegal content, or breach any laws/platform rules.
+          </label>
         </div>
-      )}
-    </>
-  );
+      </div>
+    </div>
 
-  if (orderPlaced) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="pt-24 pb-12 flex items-center justify-center min-h-screen">
-          <div className="max-w-md mx-auto px-4 text-center animate-slide-up">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="h-10 w-10 text-green-600" />
-            </div>
-            <h2 className="text-3xl font-black text-foreground mb-3">Order Placed!</h2>
-            <p className="text-muted-foreground mb-2">
-              Your {orderMode === 'bulk' ? `bulk order (${items.length} items)` : 'order'} has been successfully placed.
-            </p>
-            <p className="text-muted-foreground mb-6">We'll start printing soon!</p>
-            <div className="bg-secondary rounded-xl p-6 mb-6 text-left space-y-3">
-              <div className="flex justify-between">
-                <span className="text-white/60 text-sm">Order ID</span>
-                <span className="text-primary font-bold font-mono">{orderId}</span>
-              </div>
-              {orderMode === 'bulk' && (
-                <div className="flex justify-between">
-                  <span className="text-white/60 text-sm">Items</span>
-                  <span className="text-white font-bold">{items.length} print jobs</span>
+    {/* Confirmation message – appears only after acceptance */}
+    {termsAccepted && (
+      <div 
+        className="bg-green-50/60 border border-green-300 rounded-xl p-4 text-sm text-green-800 flex items-center gap-3 animate-fade-in"
+      >
+        <CheckCircle className="h-5 w-5 text-green-600 shrink-0" />
+        <span>
+          Terms & Conditions accepted — file upload is now enabled
+        </span>
+      </div>
+    )}
+
+    {/* File Upload Area */}
+    <div
+      className={`border-2 rounded-xl p-8 text-center transition-all duration-300 ${
+        termsAccepted
+          ? isDragging && activeItemIndex === itemIndex
+            ? 'border-primary bg-primary/5 shadow-md scale-[1.01]'
+            : 'border-dashed border-border hover:border-primary/60 hover:bg-primary/5 cursor-pointer'
+          : 'border-dashed border-muted-foreground/40 bg-muted/10 opacity-60 cursor-not-allowed'
+      }`}
+      onClick={() => {
+        if (termsAccepted) {
+          setActiveItemIndex(itemIndex);
+          fileInputRef.current?.click();
+        }
+      }}
+      onDragOver={(e) => {
+        if (termsAccepted) {
+          e.preventDefault();
+          setActiveItemIndex(itemIndex);
+          setIsDragging(true);
+        }
+      }}
+      onDragLeave={() => setIsDragging(false)}
+      onDrop={(e) => {
+        if (termsAccepted) {
+          setActiveItemIndex(itemIndex);
+          handleDrop(e);
+        } else {
+          e.preventDefault();
+        }
+      }}
+    >
+      <Upload
+        className={`h-12 w-12 mx-auto mb-4 transition-colors ${
+          termsAccepted && isDragging && activeItemIndex === itemIndex
+            ? 'text-primary'
+            : 'text-muted-foreground'
+        }`}
+      />
+      <p className="font-semibold text-lg text-foreground mb-2">
+        {termsAccepted ? 'Drag & drop files here' : 'Accept Terms First'}
+      </p>
+      <p className="text-muted-foreground mb-3">
+        {termsAccepted
+          ? 'or click to browse files (PDF, DOC, DOCX, JPG, PNG • max 500MB)'
+          : 'Please accept the terms & conditions above to unlock upload'}
+      </p>
+    </div>
+
+    {/* Uploaded files list */}
+    {item.files.length > 0 && (
+      <div className="space-y-3 mt-6">
+        <p className="text-sm font-medium text-foreground">Uploaded Files</p>
+        {item.files.map((f) => (
+          <div 
+            key={f.id}
+            className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg border border-border/50"
+          >
+            {getFileIcon(f.file)}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">{f.file.name}</p>
+              <p className="text-xs text-muted-foreground">
+                {(f.file.size / 1024 / 1024).toFixed(2)} MB
+              </p>
+              {f.status === 'uploading' && (
+                <div className="mt-2 h-1.5 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary rounded-full transition-all duration-300"
+                    style={{ width: `${f.progress}%` }}
+                  />
                 </div>
               )}
-              <div className="flex justify-between">
-                <span className="text-white/60 text-sm">Total Amount</span>
-                <span className="text-white font-bold">₹{totalWithDelivery.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-white/60 text-sm">Status</span>
-                <span className="text-yellow-400 font-medium">Pending</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-white/60 text-sm">Delivery</span>
-                <span className="text-white/80 text-sm">{deliveryType === 'courier' ? 'Courier Delivery' : 'Store Pickup'}</span>
-              </div>
             </div>
-            <div className="flex flex-col gap-3">
-              <Link to={`/tracking?orderId=${orderId}`} className="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-primary/90 transition-all duration-200 text-center">
-                Track Order
-              </Link>
-              <Link to="/" className="w-full border border-border text-foreground font-medium py-3 rounded-lg hover:bg-muted transition-all duration-200 text-center">
-                Back to Home
-              </Link>
-            </div>
+            {f.status === 'done' && <CheckCircle className="h-5 w-5 text-green-500" />}
+            {f.status === 'error' && <AlertCircle className="h-5 w-5 text-destructive" />}
+            <button
+              onClick={() => removeFile(itemIndex, f.id)}
+              className="p-2 hover:bg-muted rounded-full"
+            >
+              <X className="h-5 w-5 text-muted-foreground" />
+            </button>
           </div>
-        </div>
-        <Footer />
+        ))}
       </div>
-    );
-  }
+    )}
+
+    {termsAccepted && item.files.length === 0 && (
+      <p className="text-center text-sm text-muted-foreground mt-4">
+        Upload at least one file to proceed to the next step
+      </p>
+    )}
+  </div>
+);
+  // const renderFileUpload = (item: OrderItem, itemIndex: number) => (
+  //   <>
+  //     <div
+  //       className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-200 ${
+  //         isDragging && activeItemIndex === itemIndex ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-muted/30'
+  //       }`}
+  //       onClick={() => { setActiveItemIndex(itemIndex); fileInputRef.current?.click(); }}
+  //       onDragOver={(e) => { e.preventDefault(); setActiveItemIndex(itemIndex); setIsDragging(true); }}
+  //       onDragLeave={() => setIsDragging(false)}
+  //       onDrop={(e) => { setActiveItemIndex(itemIndex); handleDrop(e); }}
+  //     >
+  //       <Upload className={`h-10 w-10 mx-auto mb-3 transition-colors duration-200 ${isDragging && activeItemIndex === itemIndex ? 'text-primary' : 'text-muted-foreground'}`} />
+  //       <p className="font-semibold text-foreground mb-1">Drag & drop files here</p>
+  //       <p className="text-muted-foreground text-sm mb-3">or click to browse</p>
+  //       <p className="text-xs text-muted-foreground">Supported: PDF, DOC, DOCX, JPEG, JPG, PNG • Max 500MB per file</p>
+  //     </div>
+
+  //     {item.files.length > 0 && (
+  //       <div className="mt-4 space-y-2">
+  //         {item.files.map((f) => (
+  //           <div key={f.id} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+  //             {getFileIcon(f.file)}
+  //             <div className="flex-1 min-w-0">
+  //               <p className="text-sm font-medium text-foreground truncate">{f.file.name}</p>
+  //               <p className="text-xs text-muted-foreground">{(f.file.size / 1024 / 1024).toFixed(2)} MB</p>
+  //               {f.status === 'uploading' && (
+  //                 <div className="mt-1 h-1 bg-muted rounded-full overflow-hidden">
+  //                   <div className="h-full bg-primary rounded-full transition-all duration-300" style={{ width: `${f.progress}%` }} />
+  //                 </div>
+  //               )}
+  //             </div>
+  //             {f.status === 'done' && <CheckCircle className="h-4 w-4 text-green-500 shrink-0" />}
+  //             {f.status === 'error' && <AlertCircle className="h-4 w-4 text-destructive shrink-0" />}
+  //             <button onClick={() => removeFile(itemIndex, f.id)} className="p-1 hover:bg-muted rounded transition-colors">
+  //               <X className="h-4 w-4 text-muted-foreground" />
+  //             </button>
+  //           </div>
+  //         ))}
+  //       </div>
+  //     )}
+  //   </>
+  // );
+
+  // if (orderPlaced) {
+  //   return (
+  //     <div className="min-h-screen bg-background">
+  //       <Navbar />
+  //       <div className="pt-24 pb-12 flex items-center justify-center min-h-screen">
+  //         <div className="max-w-md mx-auto px-4 text-center animate-slide-up">
+  //           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+  //             <CheckCircle className="h-10 w-10 text-green-600" />
+  //           </div>
+  //           <h2 className="text-3xl font-black text-foreground mb-3">Order Placed!</h2>
+  //           <p className="text-muted-foreground mb-2">
+  //             Your {orderMode === 'bulk' ? `bulk order (${items.length} items)` : 'order'} has been successfully placed.
+  //           </p>
+  //           <p className="text-muted-foreground mb-6">We'll start printing soon!</p>
+  //           <div className="bg-secondary rounded-xl p-6 mb-6 text-left space-y-3">
+  //             <div className="flex justify-between">
+  //               <span className="text-white/60 text-sm">Order ID</span>
+  //               <span className="text-primary font-bold font-mono">{orderId}</span>
+  //             </div>
+  //             {orderMode === 'bulk' && (
+  //               <div className="flex justify-between">
+  //                 <span className="text-white/60 text-sm">Items</span>
+  //                 <span className="text-white font-bold">{items.length} print jobs</span>
+  //               </div>
+  //             )}
+  //             <div className="flex justify-between">
+  //               <span className="text-white/60 text-sm">Total Amount</span>
+  //               <span className="text-white font-bold">₹{totalWithDelivery.toFixed(2)}</span>
+  //             </div>
+  //             <div className="flex justify-between">
+  //               <span className="text-white/60 text-sm">Status</span>
+  //               <span className="text-yellow-400 font-medium">Pending</span>
+  //             </div>
+  //             <div className="flex justify-between">
+  //               <span className="text-white/60 text-sm">Delivery</span>
+  //               <span className="text-white/80 text-sm">{deliveryType === 'courier' ? 'Courier Delivery' : 'Store Pickup'}</span>
+  //             </div>
+  //           </div>
+  //           <div className="flex flex-col gap-3">
+  //             <Link to={`/tracking?orderId=${orderId}`} className="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-primary/90 transition-all duration-200 text-center">
+  //               Track Order
+  //             </Link>
+  //             <Link to="/" className="w-full border border-border text-foreground font-medium py-3 rounded-lg hover:bg-muted transition-all duration-200 text-center">
+  //               Back to Home
+  //             </Link>
+  //           </div>
+  //         </div>
+  //       </div>
+  //       <Footer />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-background">
@@ -377,7 +619,8 @@ export default function OrderPage() {
               {[
                 { n: 1, label: 'Upload & Options' },
                 { n: 2, label: 'Delivery Details' },
-                { n: 3, label: 'Payment' },
+                { n: 3, label: 'Add to Cart' },
+                // { n: 4, label: 'Payment' },
               ].map((s, i) => (
                 <div key={s.n} className="flex items-center gap-2">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
@@ -471,15 +714,33 @@ export default function OrderPage() {
                     </div>
                   </div>
 
-                  <button onClick={() => setStep(2)} disabled={!allItemsHaveFiles}
+                  {/* <button onClick={() => setStep(2)} disabled={!allItemsHaveFiles}
                     className="w-full bg-primary text-primary-foreground font-bold py-4 rounded-xl text-lg hover:bg-primary/90 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-                    Continue to Delivery <ArrowRight className="h-5 w-5" />
+                    Add to Cart <ArrowRight className="h-5 w-5" />
                   </button>
                   {!allItemsHaveFiles && (
                     <p className="text-center text-muted-foreground text-sm">
                       {orderMode === 'bulk' ? 'Please upload at least one file per item to continue' : 'Please upload at least one file to continue'}
                     </p>
-                  )}
+                  )} */}
+
+
+                  <button
+  onClick={() => setStep(2)}
+  disabled={!allItemsHaveFiles || !termsAccepted}  // ← added !termsAccepted
+  className="w-full bg-primary text-primary-foreground font-bold py-4 rounded-xl text-lg hover:bg-primary/90 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+>
+  Add to Cart <ArrowRight className="h-5 w-5" />
+</button>
+{(!allItemsHaveFiles || !termsAccepted) && (
+  <p className="text-center text-muted-foreground text-sm mt-2">
+    {!termsAccepted
+      ? 'Please accept the Terms & Conditions to upload files'
+      : orderMode === 'bulk'
+      ? 'Please upload at least one file per item to continue'
+      : 'Please upload at least one file to continue'}
+  </p>
+)}
                 </div>
               )}
 
@@ -542,64 +803,97 @@ India
                     <button onClick={() => setStep(1)} className="flex-1 border border-border text-foreground font-medium py-3 rounded-xl hover:bg-muted transition-all duration-200 flex items-center justify-center gap-2">
                       <ArrowLeft className="h-4 w-4" /> Back
                     </button>
-                    <button onClick={() => setStep(3)} disabled={!name || !phone}
+                    {/* <button onClick={() => setStep(3)} disabled={!name || !phone}
                       className="flex-[2] bg-primary text-primary-foreground font-bold py-3 rounded-xl hover:bg-primary/90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-                      Continue to Payment <ArrowRight className="h-5 w-5" />
+                      Continue <ArrowRight className="h-5 w-5" />
+                    </button> */}
+                    {/* <Link to="/cart" className=''>
+                           <button 
+                      className="flex-[2] bg-primary text-primary-foreground font-bold py-3 px-3 rounded-xl hover:bg-primary/90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                      Continue <ArrowRight className="h-5 w-5" />
                     </button>
+                    </Link> */}
+
+                    <div className="flex gap-3">
+  {/* <button
+    onClick={() => setStep(1)}
+    className="flex-1 border border-border text-foreground font-medium py-3 rounded-xl hover:bg-muted transition-all duration-200 flex items-center justify-center gap-2"
+  >
+    <ArrowLeft className="h-4 w-4" /> Back
+  </button> */}
+
+  <button
+    onClick={handleContinue}
+    disabled={
+      !allItemsHaveFiles ||
+      !termsAccepted ||
+      !name.trim() ||
+      !phone.trim() ||
+      (deliveryType === 'courier' && (!address.trim() || !pincode.trim() || !city.trim() || !state.trim()))
+    }
+    className="flex-[2] bg-primary text-primary-foreground font-bold py-3 rounded-xl hover:bg-primary/90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 px-4"
+  >
+    Continue to Cart <ArrowRight className="h-5 w-5" />
+  </button>
+</div>
+
                   </div>
                 </div>
               )}
 
-              {/* Step 3 — Payment */}
-              {step === 3 && (
-                <div className="space-y-6 animate-slide-up">
-                  <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
-                    <h2 className="text-lg font-bold text-foreground mb-2 flex items-center gap-2">
-                      <CreditCard className="h-5 w-5 text-primary" /> Payment
-                    </h2>
-                    <p className="text-muted-foreground text-sm mb-6">Secure payment powered by Razorpay</p>
-                    <div className="border border-border rounded-xl overflow-hidden">
-                      <div className="bg-secondary p-4 flex items-center justify-between">
-                        <div>
-                          <p className="text-white/60 text-xs">BookPrinters.in</p>
-                          <p className="text-white font-bold text-lg">₹{totalWithDelivery.toFixed(2)}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-white/40 text-xs">Powered by</p>
-                          <p className="text-white font-bold text-sm">razorpay</p>
-                        </div>
-                      </div>
-                      <div className="p-6 space-y-4">
-                        <div className="grid grid-cols-3 gap-2">
-                          {['UPI', 'Cards', 'Net Banking'].map((method) => (
-                            <button key={method} className="p-3 border border-border rounded-lg text-sm font-medium text-foreground hover:border-primary hover:bg-primary/5 transition-all duration-200 text-center">
-                              {method}
-                            </button>
-                          ))}
-                        </div>
-                        <div>
-                          <label className="block text-sm font-semibold text-foreground mb-1">UPI ID</label>
-                          <input type="text" placeholder="yourname@upi"
-                            className="w-full px-3 py-2.5 border border-border rounded-md text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none" />
-                        </div>
-                        <div className="flex items-center gap-2 p-3 bg-muted/30 rounded-lg">
-                          <Info className="h-4 w-4 text-primary shrink-0" />
-                          <p className="text-xs text-muted-foreground">This is a demo UI. Real Razorpay integration coming soon.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <button onClick={() => setStep(2)} className="flex-1 border border-border text-foreground font-medium py-3 rounded-xl hover:bg-muted transition-all duration-200 flex items-center justify-center gap-2">
-                      <ArrowLeft className="h-4 w-4" /> Back
-                    </button>
-                    <button onClick={placeOrder}
-                      className="flex-[2] bg-primary text-primary-foreground font-bold py-3 rounded-xl hover:bg-primary/90 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2">
-                      Confirm & Place Order <CheckCircle className="h-5 w-5" />
-                    </button>
-                  </div>
-                </div>
-              )}
+
+
+
+             {/* {step === 3 && (
+  <div className="space-y-6 animate-slide-up">
+    <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
+      <h2 className="text-lg font-bold text-foreground mb-4">
+        Review Order
+      </h2>
+
+      <div className="space-y-3 text-sm">
+        <div className="flex justify-between">
+          <span>Name</span>
+          <span className="font-medium">{name}</span>
+        </div>
+        <div className="flex justify-between">
+          <span>Phone</span>
+          <span className="font-medium">{phone}</span>
+        </div>
+        <div className="flex justify-between">
+          <span>Delivery</span>
+          <span className="font-medium">
+            {deliveryType === 'courier' ? 'Courier' : 'Pickup'}
+          </span>
+        </div>
+        <div className="flex justify-between text-lg font-bold pt-3 border-t">
+          <span>Total Amount</span>
+          <span className="text-primary">
+            ₹{totalWithDelivery.toFixed(2)}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div className="flex gap-3">
+      <button
+        onClick={() => setStep(2)}
+        className="flex-1 border border-border text-foreground font-medium py-3 rounded-xl hover:bg-muted transition-all duration-200"
+      >
+        Back
+      </button>
+
+      <button
+        onClick={() => setStep(4)}
+        className="flex-[2] bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary/90 transition-all duration-200"
+      >
+        Proceed to Payment
+      </button>
+    </div>
+  </div>
+)} */}
+
+            
             </div>
 
             {/* Order Summary Sidebar */}

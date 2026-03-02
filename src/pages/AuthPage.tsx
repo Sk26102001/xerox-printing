@@ -758,11 +758,7 @@ export default function AuthPage() {
               <div className="mt-5 pt-4 border-t border-slate-200 text-center text-xs text-slate-500">
                 By continuing, you agree to our{' '}
                 <Link to="/terms" className="text-red-600 hover:underline">
-                  Terms
-                </Link>{' '}
-                and{' '}
-                <Link to="/privacy" className="text-red-600 hover:underline">
-                  Privacy Policy
+                  Terms & Conditions
                 </Link>
               </div>
             </div>

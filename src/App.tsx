@@ -10,6 +10,11 @@ import AuthPage from "./pages/AuthPage";
 import OrderHistoryPage from "./pages/OrderHistoryPage";
 import NotFound from "./pages/NotFound";
 import FloatingPhone from "@/components/FloatingPhone";
+import TermsAndConditions from "./pages/TermsAndConditions";
+import ContactPage from "./pages/ContactPage";
+import AddToCart from "./pages/AddToCart";
+import Payment from "./pages/PaymentPage";
+import PaymentPage from "./pages/PaymentPage";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +31,11 @@ const App = () => (
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/history" element={<OrderHistoryPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          
+          <Route path="/terms" element={<TermsAndConditions />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/cart" element={<AddToCart />} />
+          <Route path="/payment" element={<PaymentPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
            {/* 🔥 Floating Phone Visible on All Pages */}

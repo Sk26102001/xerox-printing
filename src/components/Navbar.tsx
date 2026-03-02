@@ -139,7 +139,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone } from 'lucide-react';
+import { Menu, X, Phone,ShoppingCart } from 'lucide-react';
 import logo from '@/assets/logo2.png';
 
 const navLinks = [
@@ -199,11 +199,11 @@ export default function Navbar() {
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
             <a
-              href="tel:+919999999999"
+              href="/contact"
               className="flex items-center gap-2 text-gray-700 hover:text-primary text-sm font-medium transition-colors duration-200"
             >
               <Phone className="h-4 w-4" />
-              <span>Call Us</span>
+              <span>Contact Us</span>
             </a>
 
             <Link
@@ -219,7 +219,18 @@ export default function Navbar() {
             >
               Order Now
             </Link>
+
+
+             <Link to="/cart" className="relative group">
+    <ShoppingCart className="h-6 w-6 text-gray-700 group-hover:text-primary transition-colors duration-200 ml-4" />
+    
+    {/* Cart Badge */}
+    <span className="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+      1
+    </span>
+  </Link>
           </div>
+          
 
           {/* Mobile Menu Button */}
           <button

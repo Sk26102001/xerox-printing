@@ -126,9 +126,9 @@ export default function Footer() {
             © 2026 BookPrinters.in. All rights reserved. | GST Registered
           </p>
           <div className="flex items-center gap-4">
-            <Link to="/" className="text-white/50 hover:text-primary text-xs transition-colors duration-200">Privacy Policy</Link>
-            <Link to="/" className="text-white/50 hover:text-primary text-xs transition-colors duration-200">Terms of Service</Link>
-            <Link to="/" className="text-white/50 hover:text-primary text-xs transition-colors duration-200">Refund Policy</Link>
+            <Link to="/terms" className="text-white/50 hover:text-primary text-xs transition-colors duration-200">Privacy Policy</Link>
+            <Link to="/terms" className="text-white/50 hover:text-primary text-xs transition-colors duration-200">Terms of Service</Link>
+            <Link to="/terms" className="text-white/50 hover:text-primary text-xs transition-colors duration-200">Refund Policy</Link>
           </div>
         </div>
       </div>
