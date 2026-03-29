@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import { useState } from 'react';
 // import { Link } from 'react-router-dom';
 
@@ -1957,10 +1958,16 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Download, Eye, Clock, CheckCircle, Printer, Truck, Package, Filter, CreditCard, Wallet } from 'lucide-react';
+=======
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FileText, Download, Eye, Clock, CheckCircle, Printer, Truck, Package, Filter } from 'lucide-react';
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+<<<<<<< HEAD
 import axios from "axios";
 
 interface OrderItem {
@@ -1971,6 +1978,8 @@ interface OrderItem {
   bindingType: string;
   fileName?: string;
 }
+=======
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 
 interface Order {
   id: string;
@@ -1982,6 +1991,7 @@ interface Order {
   bindingType: string;
   amount: number;
   status: 'pending' | 'printing' | 'ready' | 'completed' | 'dispatched';
+<<<<<<< HEAD
   paymentStatus: string;
   deliveryType: string;
   paymentMode?: 'upi' | 'card' | 'bank' | 'cod';
@@ -2000,6 +2010,62 @@ interface Order {
   };
 }
 
+=======
+  deliveryType: string;
+}
+
+const mockOrders: Order[] = [
+  {
+    id: 'BP20260219001',
+    date: '2026-02-19',
+    pages: 200,
+    copies: 2,
+    paperSize: 'A4',
+    printColor: 'B&W',
+    bindingType: 'Perfect Glue',
+    amount: 425.60,
+    status: 'printing',
+    deliveryType: 'Store Pickup',
+  },
+  {
+    id: 'BP20260215002',
+    date: '2026-02-15',
+    pages: 350,
+    copies: 5,
+    paperSize: 'B5',
+    printColor: 'B&W',
+    bindingType: 'Hardbound',
+    amount: 1280.50,
+    status: 'completed',
+    deliveryType: 'Courier',
+  },
+  {
+    id: 'BP20260210003',
+    date: '2026-02-10',
+    pages: 120,
+    copies: 1,
+    paperSize: 'A5',
+    printColor: 'Color',
+    bindingType: 'Spiral',
+    amount: 840.00,
+    status: 'completed',
+    deliveryType: 'Store Pickup',
+  },
+  {
+    id: 'BP20260201004',
+    date: '2026-02-01',
+    pages: 500,
+    copies: 10,
+    paperSize: 'A4',
+    printColor: 'B&W',
+    bindingType: 'Perfect Glue',
+    amount: 3150.00,
+    status: 'completed',
+    deliveryType: 'Courier',
+  },
+];
+
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 const statusColors: Record<Order['status'], string> = {
   pending: 'bg-yellow-100 text-yellow-700',
   printing: 'bg-blue-100 text-blue-700',
@@ -2016,6 +2082,7 @@ const statusIcons: Record<Order['status'], any> = {
   completed: CheckCircle,
 };
 
+<<<<<<< HEAD
 function InvoiceModal({ order, onClose }: { order: Order; onClose: () => void }) {
   const totalGstRate = 0.05;
   const baseAmount = order.amount / (1 + totalGstRate);
@@ -2154,11 +2221,189 @@ const numberToWords = (num: number) => {
   const paymentDetails = getPaymentDetails();
   const PaymentIcon = paymentDetails.icon;
 
+=======
+// Invoice Generator Component
+// function InvoiceModal({ order, onClose }: { order: Order; onClose: () => void }) {
+//   const gst = order.amount / 1.18 * 0.18;
+//   const baseAmount = order.amount - gst;
+// //   const totalGstRate = 0.14; // 5% + 9%
+// // const baseAmount = order.amount / (1 + totalGstRate);
+// // const cgst = baseAmount * 0.05;
+// // const sgst = baseAmount * 0.09;
+
+//   const handlePrint = () => {
+//     window.print();
+//   };
+
+//   return (
+//     <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 animate-fade-in">
+//       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-up">
+//         {/* Invoice */}
+//         <div id="invoice-print" className="p-8">
+//           {/* Header */}
+//           <div className="flex justify-between items-start border-b-2 border-secondary pb-6 mb-6">
+//             <div>
+//               <h1 className="text-xl font-black text-secondary">Shree Education and Publication private limited</h1>
+//               <p className="text-muted-foreground text-sm">Where Ideas Ink Themselves</p>
+//               <p className="text-muted-foreground text-sm mt-1">Rajasthan, India</p>
+//               <p className="text-muted-foreground text-sm">GSTIN: 08ABECS6515Q1ZP</p>
+//             </div>
+//             <div className="text-right">
+//               <div className="bg-primary text-white px-4 py-2 rounded-lg">
+//                 <p className="text-xs opacity-80">TAX INVOICE</p>
+//                 <p className="font-bold">#{order.id}</p>
+//               </div>
+//               <p className="text-muted-foreground text-sm mt-2">Date: {order.date}</p>
+//             </div>
+//           </div>
+
+//           {/* Customer */}
+//           <div className="grid grid-cols-2 gap-6 mb-6">
+//             <div>
+//               <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2">Bill To</p>
+//               <p className="font-semibold text-foreground">Customer Name</p>
+//               <p className="text-muted-foreground text-sm">customer@email.com</p>
+//               <p className="text-muted-foreground text-sm">+91 XXXXX XXXXX</p>
+//             </div>
+//             <div className="text-right">
+//               <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2">Order Info</p>
+//               <p className="text-sm text-muted-foreground">Delivery: {order.deliveryType}</p>
+//               <p className="text-sm text-muted-foreground">Payment: Razorpay</p>
+//             </div>
+//           </div>
+
+//           {/* Items Table */}
+//           <table className="w-full mb-6">
+//             <thead>
+//               <tr className="bg-secondary text-white">
+//                 <th className="p-3 text-left text-sm font-semibold rounded-tl-lg">Description</th>
+//                 <th className="p-3 text-center text-sm font-semibold">Qty</th>
+//                 <th className="p-3 text-right text-sm font-semibold">Rate</th>
+//                 <th className="p-3 text-right text-sm font-semibold rounded-tr-lg">Amount</th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               <tr className="border-b border-border">
+//                 <td className="p-3 text-sm">
+//                   <p className="font-medium">{order.printColor} Printing — {order.paperSize}</p>
+//                   <p className="text-muted-foreground text-xs">{order.pages} pages × {order.copies} copies × {order.bindingType} binding</p>
+//                 </td>
+//                 <td className="p-3 text-center text-sm">{order.copies}</td>
+//                 <td className="p-3 text-right text-sm">₹{(baseAmount / order.copies).toFixed(2)}</td>
+//                 <td className="p-3 text-right text-sm font-medium">₹{baseAmount.toFixed(2)}</td>
+//               </tr>
+//             </tbody>
+//           </table>
+
+//           {/* Totals */}
+//           <div className="flex justify-end">
+//             <div className="w-56 space-y-2">
+//               <div className="flex justify-between text-sm">
+//                 <span className="text-muted-foreground">Subtotal</span>
+//                 <span>₹{baseAmount.toFixed(2)}</span>
+//               </div>
+//               <div className="flex justify-between text-sm">
+//                 <span className="text-muted-foreground">CGST (5%)</span>
+//                 <span>₹{(gst / 2).toFixed(2)}</span>
+//               </div>
+//               <div className="flex justify-between text-sm">
+//                 <span className="text-muted-foreground">SGST (9%)</span>
+//                 <span>₹{(gst / 2).toFixed(2)}</span>
+//               </div>
+//               <div className="flex justify-between font-black text-lg border-t-2 border-secondary pt-2 mt-2">
+//                 <span>TOTAL</span>
+//                 <span className="text-primary">₹{order.amount.toFixed(2)}</span>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Footer */}
+//           <div className="mt-8 pt-6 border-t border-border text-center">
+//             <p className="text-muted-foreground text-xs">Thank you for choosing BookPrinters.in</p>
+//             <p className="text-muted-foreground text-xs">This is a computer-generated invoice and does not require a physical signature.</p>
+//           </div>
+//         </div>
+
+//         {/* Actions */}
+//         <div className="px-8 pb-6 flex gap-3 no-print">
+//           <button
+//             onClick={onClose}
+//             className="flex-1 border border-border text-foreground font-medium py-2.5 rounded-lg hover:bg-muted transition-all duration-200"
+//           >
+//             Close
+//           </button>
+//           <button
+//             onClick={handlePrint}
+//             className="flex-1 bg-primary text-primary-foreground font-bold py-2.5 rounded-lg hover:bg-primary/90 transition-all duration-200 flex items-center justify-center gap-2"
+//           >
+//             <Download className="h-4 w-4" /> Download / Print
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+function InvoiceModal({ order, onClose }: { order: Order; onClose: () => void }) {
+  // 5% total GST (2.5% CGST + 2.5% SGST)
+  const totalGstRate = 0.05;
+  const baseAmount = order.amount / (1 + totalGstRate);
+  const gst = order.amount - baseAmount;
+  const cgst = gst / 2;   // 2.5%
+  const sgst = gst / 2;   // 2.5%
+
+  // const handlePrint = () => {
+  //   window.print();
+
+
+const handleDownload = async () => {
+  const invoice = document.getElementById("invoice-print");
+  if (!invoice) return;
+
+  const canvas = await html2canvas(invoice, {
+    scale: 2,
+    useCORS: true,
+  });
+
+  const imgData = canvas.toDataURL("image/png");
+
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  const pdfWidth = 210;  // A4 width in mm
+  const pdfHeight = 297; // A4 height in mm
+
+  // Calculate image ratio
+  const imgWidth = pdfWidth;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  // If content is taller than A4, scale it down
+  const finalHeight =
+    imgHeight > pdfHeight ? pdfHeight : imgHeight;
+
+  pdf.addImage(
+    imgData,
+    "PNG",
+    0,
+    0,
+    pdfWidth,
+    finalHeight
+  );
+
+  pdf.save(`Invoice-${order.id}.pdf`);
+};
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
   return (
     <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 animate-fade-in">
       <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-slide-up">
         {/* Invoice Content */}
+<<<<<<< HEAD
         <div id="invoice-print" className="p-8 md:p-10 bg-white w-[794px] mx-auto">
+=======
+        <div
+  id="invoice-print"
+  className="p-8 md:p-10 bg-white w-[794px] mx-auto"
+>
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
           {/* Header */}
           <div className="flex justify-between items-start border-b-2 border-secondary pb-6 mb-6">
             <div>
@@ -2167,11 +2412,20 @@ const numberToWords = (num: number) => {
               </h1>
               <p className="text-muted-foreground text-sm mt-1">
                 Mother’s School Campus
+<<<<<<< HEAD
                 Gaddi Maliyan, Jonsganj Road
               </p>
               <p className="text-muted-foreground text-sm">
                 Ajmer, Rajasthan – 305001
                 India
+=======
+Gaddi Maliyan, Jonsganj Road
+
+              </p>
+              <p className="text-muted-foreground text-sm">
+                 AJMER, Rajasthan – 305001
+India
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
               </p>
               <p className="text-muted-foreground text-sm mt-1">
                 Phone: 7230001405 | Email: shreedupub@gmail.com
@@ -2183,6 +2437,7 @@ const numberToWords = (num: number) => {
             <div className="text-right">
               <div className="bg-primary text-white px-5 py-3 rounded-lg inline-block">
                 <p className="text-xs opacity-90">TAX INVOICE</p>
+<<<<<<< HEAD
                 <p className="font-bold text-lg">#{order.id}</p>
               </div>
               <p className="text-muted-foreground text-sm mt-3">
@@ -2235,6 +2490,36 @@ const numberToWords = (num: number) => {
               ) : (
                 <p className="text-muted-foreground text-sm">State: Rajasthan</p>
               )}
+=======
+                <p className="font-bold text-lg">#{order.id }</p>
+              </div>
+              <p className="text-muted-foreground text-sm mt-3">
+                Date: {order.date || "07-02-2026"}
+              </p>
+              <p className="text-muted-foreground text-sm">
+                Place of Supply: 09-Uttar Pradesh
+              </p>
+            </div>
+          </div>
+
+          {/* Bill To / Ship To */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="md:col-span-2">
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2">
+                Bill To / Ship To
+              </p>
+              <p className="font-semibold">Diwakar Education Hub</p>
+              <p className="text-muted-foreground text-sm">
+                NA NA NA Barampur Kiratpur
+              </p>
+              <p className="text-muted-foreground text-sm">
+                Contact No: 7310762592
+              </p>
+              <p className="text-muted-foreground text-sm font-medium">
+                GSTIN: 09GAIPS3840G1ZB
+              </p>
+              <p className="text-muted-foreground text-sm">State: 09-Uttar Pradesh</p>
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
             </div>
 
             <div>
@@ -2242,6 +2527,7 @@ const numberToWords = (num: number) => {
                 Invoice Details
               </p>
               <p className="text-sm text-muted-foreground">
+<<<<<<< HEAD
                 Invoice No: {order.id}
               </p>
               <p className="text-sm text-muted-foreground">
@@ -2263,6 +2549,13 @@ const numberToWords = (num: number) => {
                   Transaction ID: {paymentDetails.transactionId}
                 </p>
               )}
+=======
+                Invoice No: {order.id }
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Date: {order.date || "07-02-2026"}
+              </p>
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
             </div>
           </div>
 
@@ -2272,6 +2565,7 @@ const numberToWords = (num: number) => {
               <tr className="bg-secondary text-white">
                 <th className="p-3 text-left rounded-tl-lg">#</th>
                 <th className="p-3 text-left">Item name</th>
+<<<<<<< HEAD
                 <th className="p-3 text-center">Pages</th>
                 <th className="p-3 text-center">Copies</th>
                 <th className="p-3 text-center">Paper Size</th>
@@ -2302,10 +2596,66 @@ const numberToWords = (num: number) => {
                   </tr>
                 );
               })}
+=======
+                <th className="p-3 text-center">HSN/SAC</th>
+                <th className="p-3 text-center">Quantity</th>
+                <th className="p-3 text-right">Price/unit</th>
+                <th className="p-3 text-right rounded-tr-lg">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b">
+                <td className="p-3">1</td>
+                <td className="p-3">UGC NET Psychology PYQ</td>
+                <td className="p-3 text-center">—</td>
+                <td className="p-3 text-center">50</td>
+                <td className="p-3 text-right">₹165.00</td>
+                <td className="p-3 text-right font-medium">₹8,250.00</td>
+              </tr>
+              <tr className="border-b">
+                <td className="p-3">2</td>
+                <td className="p-3">CUET PG English Theory Book</td>
+                <td className="p-3 text-center">—</td>
+                <td className="p-3 text-center">50</td>
+                <td className="p-3 text-right">₹116.00</td>
+                <td className="p-3 text-right font-medium">₹5,800.00</td>
+              </tr>
+              <tr className="border-b">
+                <td className="p-3">3</td>
+                <td className="p-3">JAILIB Hindi Medium education</td>
+                <td className="p-3 text-center">—</td>
+                <td className="p-3 text-center">30</td>
+                <td className="p-3 text-right">₹169.00</td>
+                <td className="p-3 text-right font-medium">₹5,070.00</td>
+              </tr>
+              <tr className="border-b">
+                <td className="p-3">4</td>
+                <td className="p-3">CUET ug physical education</td>
+                <td className="p-3 text-center">—</td>
+                <td className="p-3 text-center">50</td>
+                <td className="p-3 text-right">₹92.00</td>
+                <td className="p-3 text-right font-medium">₹4,600.00</td>
+              </tr>
+              <tr className="border-b">
+                <td className="p-3">5</td>
+                <td className="p-3">JAILIB English Medium</td>
+                <td className="p-3 text-center">—</td>
+                <td className="p-3 text-center">30</td>
+                <td className="p-3 text-right">₹184.00</td>
+                <td className="p-3 text-right font-medium">₹5,520.00</td>
+              </tr>
+              <tr className="font-bold bg-gray-50">
+                <td colSpan={5} className="p-3 text-right">
+                  Total
+                </td>
+                <td className="p-3 text-right">₹29,240.00</td>
+              </tr>
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
             </tbody>
           </table>
 
           {/* Amount in Words & Totals */}
+<<<<<<< HEAD
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
       <div>
         <p className="font-medium">
@@ -2315,6 +2665,17 @@ const numberToWords = (num: number) => {
           {numberToWords(order.amount)}
         </p>
       </div>
+=======
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+            <div>
+              <p className="font-medium">
+                Invoice Amount In Words:
+              </p>
+              <p className="text-lg font-semibold text-secondary mt-1">
+                Twenty Nine Thousand Two Hundred and Forty Rupees only
+              </p>
+            </div>
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 
             <div className="w-64 space-y-2 text-right">
               <div className="flex justify-between">
@@ -2336,6 +2697,7 @@ const numberToWords = (num: number) => {
             </div>
           </div>
 
+<<<<<<< HEAD
           {/* Payment Details - Display actual payment method used */}
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div>
@@ -2374,6 +2736,32 @@ const numberToWords = (num: number) => {
                 </p>
               </div>
             )}
+=======
+          {/* Payment Mode & Bank Details */}
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <div>
+              <p className="font-medium mb-2">Payment Mode</p>
+              <p className="text-muted-foreground">
+                Shree Education And Publication Private Limited
+              </p>
+            </div>
+
+            <div>
+              <p className="font-medium mb-2">Bank Details</p>
+              <p className="text-sm text-muted-foreground">
+                <strong>Name:</strong> State Bank Of India, Chandervardai, Ajmer
+              </p>
+              <p className="text-sm text-muted-foreground">
+                <strong>Account No:</strong> 39918178182
+              </p>
+              <p className="text-sm text-muted-foreground">
+                <strong>IFSC Code:</strong> SBIN0032089
+              </p>
+              <p className="text-sm text-muted-foreground">
+                <strong>Account Holder:</strong> Shree Education And Publication Private Limited
+              </p>
+            </div>
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
           </div>
 
           {/* Terms & Authorized Signatory */}
@@ -2381,10 +2769,14 @@ const numberToWords = (num: number) => {
             <div>
               <p className="font-medium mb-2">Terms and conditions</p>
               <p className="text-sm text-muted-foreground">
+<<<<<<< HEAD
                 Thank you for doing business with us. For any queries, please contact our support team.
               </p>
               <p className="text-sm text-muted-foreground mt-1">
                 Delivery: {isCourier ? 'Courier delivery within 3-5 business days' : 'Store pickup available during business hours'}
+=======
+                Thank you for doing business with us.
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
               </p>
             </div>
 
@@ -2404,6 +2796,7 @@ const numberToWords = (num: number) => {
             </p>
             <div className="mt-8 grid md:grid-cols-2 gap-6 text-left text-sm">
               <div>
+<<<<<<< HEAD
                 <p><strong>Invoice To:</strong> {customerName}</p>
                 {isCourier ? (
                   <p>{fullAddress}</p>
@@ -2418,6 +2811,15 @@ const numberToWords = (num: number) => {
                 <p>Invoice Date: {order.date}</p>
                 <p>Payment Mode: {paymentDetails.title.toUpperCase()}</p>
                 <p>Payment Status: {paymentStatus === 'paid' ? 'PAID' : 'PENDING'}</p>
+=======
+                <p><strong>Invoice To:</strong> Diwakar Education Hub</p>
+                <p>NA NA NA Barampur Kiratpur</p>
+              </div>
+              <div>
+                <p><strong>Invoice Details:</strong></p>
+                <p>Invoice No: 107</p>
+                <p>Invoice Date: 07-02-2026</p>
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                 <p>Total: ₹{order.amount.toFixed(2)}</p>
               </div>
             </div>
@@ -2449,6 +2851,7 @@ const numberToWords = (num: number) => {
   );
 }
 
+<<<<<<< HEAD
 export default function OrderHistoryPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -2595,6 +2998,14 @@ export default function OrderHistoryPage() {
       </div>
     );
   }
+=======
+
+export default function OrderHistoryPage() {
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [filter, setFilter] = useState<'all' | Order['status']>('all');
+
+  const filteredOrders = filter === 'all' ? mockOrders : mockOrders.filter((o) => o.status === filter);
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 
   return (
     <div className="min-h-screen bg-background">
@@ -2618,6 +3029,7 @@ export default function OrderHistoryPage() {
         </div>
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<<<<<<< HEAD
           {/* Error Message */}
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -2632,6 +3044,15 @@ export default function OrderHistoryPage() {
               { label: 'Completed', value: completedOrders, icon: CheckCircle },
               { label: 'In Progress', value: inProgressOrders, icon: Printer },
               { label: 'Total Spent', value: `₹${totalSpent.toFixed(0)}`, icon: FileText },
+=======
+          {/* Stats Row */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+            {[
+              { label: 'Total Orders', value: mockOrders.length, icon: Package },
+              { label: 'Completed', value: mockOrders.filter(o => o.status === 'completed').length, icon: CheckCircle },
+              { label: 'In Progress', value: mockOrders.filter(o => o.status !== 'completed').length, icon: Printer },
+              { label: 'Total Spent', value: `₹${mockOrders.reduce((a, o) => a + o.amount, 0).toFixed(0)}`, icon: FileText },
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
             ].map((stat) => (
               <div key={stat.label} className="bg-white rounded-xl border border-border p-4 shadow-sm">
                 <div className="flex items-center gap-3">
@@ -2684,6 +3105,10 @@ export default function OrderHistoryPage() {
                       <tr
                         key={order.id}
                         className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors duration-150"
+<<<<<<< HEAD
+=======
+                        style={{ animationDelay: `${i * 0.05}s` }}
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                       >
                         <td className="p-4">
                           <p className="font-mono font-bold text-foreground text-sm">{order.id}</p>
@@ -2712,6 +3137,7 @@ export default function OrderHistoryPage() {
                         </td>
                         <td className="p-4 text-right">
                           <div className="flex items-center justify-end gap-2">
+<<<<<<< HEAD
                            <Link
   to={`/tracking?orderId=${encodeURIComponent(order.id)}`}
   className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
@@ -2719,6 +3145,15 @@ export default function OrderHistoryPage() {
 >
   <Eye className="h-4 w-4" />
 </Link>
+=======
+                            <Link
+                              to={`/tracking?orderId=${order.id}`}
+                              className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                              title="Track Order"
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Link>
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                             <button
                               onClick={() => setSelectedOrder(order)}
                               className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-primary rounded-lg text-xs font-semibold hover:bg-primary hover:text-primary-foreground transition-all duration-200"
@@ -2734,7 +3169,11 @@ export default function OrderHistoryPage() {
                 </tbody>
               </table>
 
+<<<<<<< HEAD
               {filteredOrders.length === 0 && !error && (
+=======
+              {filteredOrders.length === 0 && (
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                 <div className="text-center py-12">
                   <Package className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
                   <p className="text-muted-foreground font-medium">No orders found</p>
@@ -2757,6 +3196,7 @@ export default function OrderHistoryPage() {
     </div>
   );
 }
+<<<<<<< HEAD
 
 
 
@@ -3595,3 +4035,5 @@ export default function OrderHistoryPage() {
 //     </div>
 //   );
 // }
+=======
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905

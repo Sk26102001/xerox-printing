@@ -151,10 +151,13 @@
 // BookPrinters.in Pricing Data with Weight Estimation + Courier Charges
 // All original fields are kept exactly as provided
 
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 export type PaperSize = 'A4' | 'B5' | 'A5' | '6x9';
 export type PaperType = '70gsm_normal' | '70gsm_premium' | '80gsm_sunshine' | '100gsm_natural' | '100gsm_sunshine' | '80gsm_bond' | '100gsm_bond';
 export type PrintColor = 'bw' | 'color';

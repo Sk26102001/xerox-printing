@@ -234,6 +234,7 @@
 
 
 
+<<<<<<< HEAD
 // import { useState, useEffect, useRef } from 'react';
 // import { Link, useNavigate } from 'react-router-dom';
 // import { Mail, Lock, User, Phone, Eye, EyeOff, ArrowRight, CheckCircle2, XCircle, ArrowLeft } from 'lucide-react';
@@ -1487,11 +1488,20 @@ import {
   forgotPassword,
   resetPasswordWithOtp,     // ← updated name
 } from "@/api/authApi";
+=======
+import { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Mail, Lock, User, Phone, Eye, EyeOff, ArrowRight, CheckCircle2, XCircle, ArrowLeft } from 'lucide-react';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import logo from '@/assets/logo.jpeg';
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 
 export default function AuthPage() {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [loginMethod, setLoginMethod] = useState<'email' | 'otp'>('email');
 
+<<<<<<< HEAD
   // Forgot password flow states
   const [forgotMode, setForgotMode] = useState(false);
   const [forgotStep, setForgotStep] = useState<'email' | 'otp' | 'new-password' | 'success'>('email');
@@ -1522,6 +1532,26 @@ export default function AuthPage() {
       navigate("/order");
     }
   }, [isAuthenticated, navigate]);
+=======
+  // Form fields
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // OTP states
+  const [otpStep, setOtpStep] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const navigate = useNavigate();
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 
   useEffect(() => {
     if (countdown > 0) {
@@ -1530,6 +1560,7 @@ export default function AuthPage() {
     }
   }, [countdown]);
 
+<<<<<<< HEAD
   const startOtpTimer = () => setCountdown(60);
 
   // ─── REGISTER ────────────────────────────────────────────────────────
@@ -1656,6 +1687,37 @@ export default function AuthPage() {
   // OTP input handlers
   const handleOtpChange = (index: number, value: string) => {
     if (value !== '' && !/^\d$/.test(value)) return;
+=======
+  const startOtpTimer = () => {
+    setCountdown(60);
+  };
+
+  const validatePhone = (ph: string) => /^[6-9]\d{9}$/.test(ph);
+
+  const validateRegisterForm = () => {
+    if (!name.trim()) {
+      setError('Full name is required');
+      return false;
+    }
+    if (!validatePhone(phone)) {
+      setError('Please enter a valid 10-digit Indian mobile number');
+      return false;
+    }
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long');
+      return false;
+    }
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return false;
+    }
+    return true;
+  };
+
+  // ── Shared OTP input handlers ──
+  const handleOtpChange = (index: number, value: string) => {
+    if (!/^\d$/.test(value) && value !== '') return;
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
@@ -1668,11 +1730,73 @@ export default function AuthPage() {
     }
   };
 
+<<<<<<< HEAD
   const handleResendOtp = () => handleSendResetOtp({ preventDefault: () => {} } as any);
 
   // ────────────────────────────────────────────────────────────────
   // RENDER
   // ────────────────────────────────────────────────────────────────
+=======
+  // ── Login with Email/Password ──
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    await new Promise(r => setTimeout(r, 1500));
+    setLoading(false);
+    setSuccess(true);
+    setTimeout(() => navigate('/history'), 800);
+  };
+
+  // ── Send OTP (login or register) ──
+  const handleSendOtp = async (e: React.FormEvent, isRegister = false) => {
+    e.preventDefault();
+    setError(null);
+    if (isRegister && !validateRegisterForm()) return;
+    if (!isRegister && !validatePhone(phone)) {
+      setError('Please enter a valid 10-digit Indian mobile number');
+      return;
+    }
+    setLoading(true);
+    await new Promise(r => setTimeout(r, 1400));
+    setLoading(false);
+    setOtpStep(true);
+    startOtpTimer();
+  };
+
+  // ── Verify OTP ──
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const otpValue = otp.join('');
+    if (otpValue.length !== 6) return;
+    setLoading(true);
+    setError(null);
+    await new Promise(r => setTimeout(r, 1200));
+    if (otpValue === '123456') {
+      setSuccess(true);
+      setTimeout(() => navigate('/history'), 800);
+    } else {
+      setError('Invalid OTP – please try again');
+      setLoading(false);
+    }
+  };
+
+  const handleResend = () => {
+    setOtp(Array(6).fill(''));
+    startOtpTimer();
+  };
+
+  useEffect(() => {
+    setOtpStep(false);
+    setOtp(Array(6).fill(''));
+    setError(null);
+    setPhone('');
+    setPassword('');
+    setConfirmPassword('');
+    if (mode === 'login') setName('');
+  }, [mode, loginMethod]);
+
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <Navbar />
@@ -1681,6 +1805,7 @@ export default function AuthPage() {
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
           <div className="w-full max-w-md">
             <div className="bg-white rounded-2xl border border-blue-100 shadow-md p-8">
+<<<<<<< HEAD
 
               <h1 className="text-2xl font-black mb-2 text-slate-800">
                 {forgotMode
@@ -1689,16 +1814,34 @@ export default function AuthPage() {
                   : forgotStep === 'new-password' ? 'Set New Password'
                   : 'Password Reset Complete'
                   : mode === 'login' ? 'Welcome Back'
+=======
+              <h1 className="text-2xl font-black mb-2 text-slate-800">
+                {mode === 'login'
+                  ? otpStep
+                    ? 'Enter OTP'
+                    : 'Welcome Back'
+                  : otpStep
+                  ? 'Verify your mobile'
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                   : 'Create Account'}
               </h1>
 
               <p className="text-slate-600 text-sm mb-6">
+<<<<<<< HEAD
                 {forgotMode
                   ? forgotStep === 'email' ? 'Enter your registered email'
                   : forgotStep === 'otp' ? `Code sent to ${email}`
                   : forgotStep === 'new-password' ? 'Choose a strong new password'
                   : 'You can now sign in with your new password.'
                   : mode === 'login' ? 'Sign in to your account'
+=======
+                {mode === 'login'
+                  ? otpStep
+                    ? `Code sent to +91 ${phone}`
+                    : 'Sign in with your preferred method'
+                  : otpStep
+                  ? `We sent a 6-digit code to +91 ${phone}`
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                   : 'Create your account to track orders & invoices'}
               </p>
 
@@ -1709,6 +1852,7 @@ export default function AuthPage() {
                 </div>
               )}
 
+<<<<<<< HEAD
               {forgotMode ? (
                 <>
                   {forgotStep === 'email' && (
@@ -1855,6 +1999,38 @@ export default function AuthPage() {
                 mode === 'login' ? (
                   loginMethod === 'email' ? (
                     <form onSubmit={handleEmailLogin} className="space-y-5">
+=======
+              {mode === 'login' && !otpStep && (
+                <div className="flex bg-slate-100 rounded-lg p-1 mb-6">
+                  <button
+                    onClick={() => setLoginMethod('email')}
+                    className={`flex-1 py-2.5 text-sm font-medium rounded-md transition-all ${
+                      loginMethod === 'email'
+                        ? 'bg-white shadow-sm text-slate-800'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    Email & Password
+                  </button>
+                  <button
+                    onClick={() => setLoginMethod('otp')}
+                    className={`flex-1 py-2.5 text-sm font-medium rounded-md transition-all ${
+                      loginMethod === 'otp'
+                        ? 'bg-white shadow-sm text-slate-800'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    Mobile OTP
+                  </button>
+                </div>
+              )}
+
+              {/* ── LOGIN ── */}
+              {mode === 'login' ? (
+                !otpStep ? (
+                  loginMethod === 'email' ? (
+                    <form onSubmit={handleEmailLogin} className="space-y-4">
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                       <div>
                         <label className="block text-sm font-semibold mb-1 text-slate-700">Email</label>
                         <div className="relative">
@@ -1893,23 +2069,66 @@ export default function AuthPage() {
                       </div>
 
                       <div className="text-right text-sm">
+<<<<<<< HEAD
                         <button
                           type="button"
                           onClick={() => setForgotMode(true)}
                           className="text-secondary hover:underline"
                         >
+=======
+                        <button type="button" className="text-secondary hover:underline">
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                           Forgot password?
                         </button>
                       </div>
 
                       <button
                         type="submit"
+<<<<<<< HEAD
+=======
+                        disabled={loading || success}
+                        className="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-secondary flex items-center justify-center gap-2 disabled:opacity-60 transition-colors"
+                      >
+                        {loading ? (
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : success ? (
+                          'Redirecting...'
+                        ) : (
+                          <>
+                            Sign In <ArrowRight className="h-4 w-4" />
+                          </>
+                        )}
+                      </button>
+                    </form>
+                  ) : (
+                    <form onSubmit={e => handleSendOtp(e)} className="space-y-5">
+                      <div>
+                        <label className="block text-sm font-semibold mb-1 text-slate-700">Mobile Number</label>
+                        <div className="relative flex items-center">
+                          <div className="absolute left-3 text-slate-500">+91</div>
+                          <Phone className="absolute left-10 h-4 w-4 text-slate-400" />
+                          <input
+                            type="tel"
+                            value={phone}
+                            onChange={e => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                            placeholder="XXXXXXXXXX"
+                            maxLength={10}
+                            required
+                            className="w-full pl-16 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                          />
+                        </div>
+                      </div>
+
+                      <button
+                        type="submit"
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                         disabled={loading}
                         className="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-secondary flex items-center justify-center gap-2 disabled:opacity-60 transition-colors"
                       >
                         {loading ? (
                           <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         ) : (
+<<<<<<< HEAD
                           <>Sign In <ArrowRight className="h-4 w-4" /></>
                         )}
                       </button>
@@ -1933,6 +2152,72 @@ export default function AuthPage() {
                 ) : (
                   // ── REGISTER ──
                   <form onSubmit={handleRegister} className="space-y-4">
+=======
+                          <>
+                            Send OTP <ArrowRight className="h-4 w-4" />
+                          </>
+                        )}
+                      </button>
+                    </form>
+                  )
+                ) : (
+                  <form onSubmit={handleVerifyOtp} className="space-y-6">
+                    <div className="flex justify-center gap-3 my-6">
+                      {otp.map((d, i) => (
+                        <input
+                          key={i}
+                          ref={el => (otpRefs.current[i] = el)}
+                          type="text"
+                          maxLength={1}
+                          value={d}
+                          onChange={e => handleOtpChange(i, e.target.value)}
+                          onKeyDown={e => handleOtpKeyDown(i, e)}
+                          className="w-12 h-12 text-center text-2xl font-bold border-2 border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none transition-colors"
+                          autoFocus={i === 0}
+                        />
+                      ))}
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={loading || otp.join('').length < 6}
+                      className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 flex justify-center items-center gap-2 disabled:opacity-60 transition-colors"
+                    >
+                      {loading ? (
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <>
+                          Verify & Login <CheckCircle2 className="h-4 w-4" />
+                        </>
+                      )}
+                    </button>
+
+                    <div className="text-center text-sm">
+                      {countdown > 0 ? (
+                        <p className="text-slate-500">
+                          Resend in {Math.floor(countdown / 60)}:
+                          {(countdown % 60).toString().padStart(2, '0')}
+                        </p>
+                      ) : (
+                        <button type="button" onClick={handleResend} className="text-blue-600 hover:underline">
+                          Resend OTP
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setOtpStep(false)}
+                        className="block mx-auto mt-3 text-slate-500 hover:text-slate-700 text-sm flex items-center gap-1"
+                      >
+                        <ArrowLeft className="h-3.5 w-3.5" /> Change number
+                      </button>
+                    </div>
+                  </form>
+                )
+              ) : (
+                // ── REGISTER ──
+                !otpStep ? (
+                  <form onSubmit={e => handleSendOtp(e, true)} className="space-y-4">
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                     <div>
                       <label className="block text-sm font-semibold mb-1 text-slate-700">Full Name</label>
                       <div className="relative">
@@ -1974,7 +2259,10 @@ export default function AuthPage() {
                           value={email}
                           onChange={e => setEmail(e.target.value)}
                           placeholder="your@email.com"
+<<<<<<< HEAD
                           required
+=======
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                           className="w-full pl-10 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
                         />
                       </div>
@@ -1988,7 +2276,11 @@ export default function AuthPage() {
                           type={showPassword ? 'text' : 'password'}
                           value={password}
                           onChange={e => setPassword(e.target.value)}
+<<<<<<< HEAD
                           placeholder="At least 6 characters"
+=======
+                          placeholder="At least 8 characters"
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                           required
                           className="w-full pl-10 pr-10 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
                         />
@@ -2007,13 +2299,29 @@ export default function AuthPage() {
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                         <input
+<<<<<<< HEAD
                           type={showPassword ? 'text' : 'password'}
                           value={confirmNewPassword}
                           onChange={e => setConfirmNewPassword(e.target.value)}
+=======
+                          type={showConfirmPassword ? 'text' : 'password'}
+                          value={confirmPassword}
+                          onChange={e => setConfirmPassword(e.target.value)}
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                           placeholder="Confirm password"
                           required
                           className="w-full pl-10 pr-10 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
                         />
+<<<<<<< HEAD
+=======
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                        >
+                          {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                       </div>
                     </div>
 
@@ -2025,6 +2333,7 @@ export default function AuthPage() {
                       {loading ? (
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                       ) : (
+<<<<<<< HEAD
                         <>Create Account <ArrowRight className="h-4 w-4" /></>
                       )}
                     </button>
@@ -2043,6 +2352,78 @@ export default function AuthPage() {
                   </button>
                 </div>
               )}
+=======
+                        <>
+                          Send OTP <ArrowRight className="h-4 w-4" />
+                        </>
+                      )}
+                    </button>
+                  </form>
+                ) : (
+                  <form onSubmit={handleVerifyOtp} className="space-y-6">
+                    <div className="flex justify-center gap-3 my-6">
+                      {otp.map((d, i) => (
+                        <input
+                          key={i}
+                          ref={el => (otpRefs.current[i] = el)}
+                          type="text"
+                          maxLength={1}
+                          value={d}
+                          onChange={e => handleOtpChange(i, e.target.value)}
+                          onKeyDown={e => handleOtpKeyDown(i, e)}
+                          className="w-12 h-12 text-center text-2xl font-bold border-2 border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none transition-colors"
+                          autoFocus={i === 0}
+                        />
+                      ))}
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={loading || otp.join('').length < 6}
+                      className="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-secondary flex justify-center items-center gap-2 disabled:opacity-60 transition-colors"
+                    >
+                      {loading ? (
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <>
+                          Verify & Create Account <CheckCircle2 className="h-4 w-4" />
+                        </>
+                      )}
+                    </button>
+
+                    <div className="text-center text-sm">
+                      {countdown > 0 ? (
+                        <p className="text-slate-500">
+                          Resend in {Math.floor(countdown / 60)}:
+                          {(countdown % 60).toString().padStart(2, '0')}
+                        </p>
+                      ) : (
+                        <button type="button" onClick={handleResend} className="text-primary hover:underline">
+                          Resend OTP
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setOtpStep(false)}
+                        className="block mx-auto mt-3 text-slate-500 hover:text-slate-700 text-sm flex items-center gap-1"
+                      >
+                        <ArrowLeft className="h-3.5 w-3.5" /> Edit details
+                      </button>
+                    </div>
+                  </form>
+                )
+              )}
+
+              <div className="mt-6 text-center text-sm text-slate-600">
+                {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+                <button
+                  onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
+                  className="text-primary font-semibold hover:underline"
+                >
+                  {mode === 'login' ? 'Register' : 'Login'}
+                </button>
+              </div>
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 
               <div className="mt-5 pt-4 border-t border-slate-200 text-center text-xs text-slate-500">
                 By continuing, you agree to our{' '}
@@ -2058,4 +2439,12 @@ export default function AuthPage() {
       <Footer />
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+
+
+
+
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905

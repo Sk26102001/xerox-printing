@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import { useState, useRef } from 'react';
 // import { saveToCart } from "@/services/orderService";
 // import { Link,useNavigate } from 'react-router-dom';
@@ -957,6 +958,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Upload, X, FileText, Image, File, AlertCircle, CheckCircle,
   ArrowRight, ArrowLeft, Calculator, Package, Plus, Trash2, Copy, Layers
+=======
+import { useState, useRef } from 'react';
+
+import { Link,useNavigate } from 'react-router-dom';
+import {
+  Upload, X, FileText, Image, File, AlertCircle, CheckCircle,
+  ArrowRight, ArrowLeft, Calculator, Package, CreditCard, Info, Plus, Trash2, Copy, Layers
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 } from 'lucide-react';
 import {
   calculatePrice, paperTypeLabels, bindingLabels,
@@ -964,7 +973,12 @@ import {
 } from '@/lib/pricingData';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+<<<<<<< HEAD
 import { toast } from "sonner";
+=======
+
+
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 
 const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
 const ALLOWED_TYPES = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/jpg', 'image/png'];
@@ -1007,16 +1021,27 @@ const createNewItem = (): OrderItem => ({
 });
 
 export default function OrderPage() {
+<<<<<<< HEAD
+=======
+
+
+  
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
   const [orderMode, setOrderMode] = useState<'single' | 'bulk'>('single');
   const [items, setItems] = useState<OrderItem[]>([createNewItem()]);
   const [activeItemIndex, setActiveItemIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [deliveryType, setDeliveryType] = useState<'pickup' | 'courier'>('pickup');
+<<<<<<< HEAD
   const [step, setStep] = useState<1 | 2 | 3>(1);
+=======
+  const [step, setStep] = useState<1 | 2 | 3| 4>(1);
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [pincode, setPincode] = useState('');
+<<<<<<< HEAD
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -1027,6 +1052,25 @@ export default function OrderPage() {
 
   // const activeItem = items[activeItemIndex];
 const activeItem = items[activeItemIndex] || items[0];
+=======
+   const [state, setState] = useState('');
+    const [city, setCity] = useState('');
+  const [orderPlaced, setOrderPlaced] = useState(false);
+  const [orderId, setOrderId] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+
+
+  
+const navigate = useNavigate();
+
+
+const [termsAccepted, setTermsAccepted] = useState(false);
+
+
+  const activeItem = items[activeItemIndex];
+
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
   const updateItem = (index: number, updates: Partial<OrderItem>) => {
     setItems(prev => prev.map((item, i) => i === index ? { ...item, ...updates } : item));
   };
@@ -1047,6 +1091,7 @@ const activeItem = items[activeItemIndex] || items[0];
   const removeItem = (index: number) => {
     if (items.length <= 1) return;
     setItems(prev => prev.filter((_, i) => i !== index));
+<<<<<<< HEAD
     // setActiveItemIndex(Math.min(activeItemIndex, items.length - 2));
 
     setItems(prev => {
@@ -1056,6 +1101,9 @@ const activeItem = items[activeItemIndex] || items[0];
   );
   return newItems;
 });
+=======
+    setActiveItemIndex(Math.min(activeItemIndex, items.length - 2));
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
   };
 
   // Calculate totals across all items
@@ -1066,9 +1114,19 @@ const activeItem = items[activeItemIndex] || items[0];
   }));
   const totalPrintingCost = itemPrices.reduce((sum, p) => sum + p.totalCost, 0);
   const totalGst = totalPrintingCost * 0.05;
+<<<<<<< HEAD
   const deliveryCharge = 0;
   const price = itemPrices[0];
   const totalWithDelivery = orderMode === 'single' ? price.grandTotal + deliveryCharge : totalPrintingCost + totalGst;
+=======
+  const totalBeforeDelivery = totalPrintingCost + totalGst;
+  const deliveryCharge = deliveryType === 'courier' ? 0 : 0;
+  const grandTotal = totalBeforeDelivery + deliveryCharge;
+
+  // For single mode, use first item's price directly
+  const price = itemPrices[0];
+  const totalWithDelivery = orderMode === 'single' ? price.grandTotal + deliveryCharge : grandTotal;
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 
   const simulateUpload = (file: File, itemIndex: number): Promise<void> => {
     return new Promise((resolve) => {
@@ -1099,11 +1157,19 @@ const activeItem = items[activeItemIndex] || items[0];
     const fileArray = Array.from(newFiles);
     for (const file of fileArray) {
       if (file.size > MAX_FILE_SIZE) {
+<<<<<<< HEAD
         toast.error(`${file.name} is too large. Max size is 500MB.`);
         continue;
       }
       if (!ALLOWED_TYPES.includes(file.type)) {
         toast.error(`${file.name} is not a supported file type.`);
+=======
+        alert(`${file.name} is too large. Max size is 500MB.`);
+        continue;
+      }
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        alert(`${file.name} is not a supported file type.`);
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
         continue;
       }
       await simulateUpload(file, activeItemIndex);
@@ -1120,6 +1186,15 @@ const activeItem = items[activeItemIndex] || items[0];
     setItems(prev => prev.map((item, i) => i === itemIndex ? { ...item, files: item.files.filter(f => f.id !== fileId) } : item));
   };
 
+<<<<<<< HEAD
+=======
+  const placeOrder = () => {
+    const id = 'BP' + Date.now().toString().slice(-8).toUpperCase();
+    setOrderId(id);
+    setOrderPlaced(true);
+  };
+
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
   const allItemsHaveFiles = items.every(item => item.files.some(f => f.status === 'done'));
 
   const getFileIcon = (file: File) => {
@@ -1128,6 +1203,7 @@ const activeItem = items[activeItemIndex] || items[0];
     return <File className="h-5 w-5 text-muted-foreground" />;
   };
 
+<<<<<<< HEAD
   // ✅ FIXED: Use actual uploaded files, not hardcoded
   const prepareOrderDataForCart = () => {
     const sanitizedItems = items.map(item => ({
@@ -1267,10 +1343,14 @@ const handleContinue = async () => {
   //   }
   // };
 
+=======
+  // Render print preferences for a given item
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
   const renderPrintPreferences = (item: OrderItem, itemIndex: number) => (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <label className="block text-sm font-semibold text-foreground mb-1">Number of Pages</label>
+<<<<<<< HEAD
         <input
           type="number"
           min={1}
@@ -1299,6 +1379,37 @@ const handleContinue = async () => {
           }
           className="w-full px-3 py-2.5 border border-border rounded-md text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
         />
+=======
+  <input
+  type="number"
+  min={1}
+  value={item.pages === 0 ? '' : item.pages}
+  placeholder="Enter pages"
+  onChange={(e) => {
+    const value = e.target.value;
+
+    if (value === '') {
+      updateItem(itemIndex, { pages: 0 }); // allow empty temporarily
+    } else {
+      updateItem(itemIndex, { pages: Math.max(1, parseInt(value)) });
+    }
+  }}
+  className="w-full px-3 py-2.5 border border-border rounded-md text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+/>
+      </div>
+      <div>
+        <label className="block text-sm font-semibold text-foreground mb-1">Number of Copies</label>
+       <input
+  type="number"
+  min={1}
+  value={item.copies === 1 ? '' : item.copies}  // hide 1
+  placeholder="Enter copies"
+  onChange={(e) =>
+    updateItem(itemIndex, { copies: Math.max(1, parseInt(e.target.value) || 1) })
+  }
+  className="w-full px-3 py-2.5 border border-border rounded-md text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+/>
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
       </div>
       <div>
         <label className="block text-sm font-semibold text-foreground mb-1">Paper Size</label>
@@ -1364,6 +1475,7 @@ const handleContinue = async () => {
     </div>
   );
 
+<<<<<<< HEAD
   const renderFileUpload = (item: OrderItem, itemIndex: number) => (
     <div className="space-y-6">
       <div 
@@ -1483,6 +1595,309 @@ const handleContinue = async () => {
       )}
     </div>
   );
+=======
+  
+// Prepare clean, serializable data
+const prepareOrderDataForCart = () => {
+  const sanitizedItems = items.map(item => ({
+    id: item.id,
+    pages: item.pages,
+    copies: item.copies,
+    paperSize: item.paperSize,
+    paperType: item.paperType,
+    printColor: item.printColor,
+    printSide: item.printSide,
+    bindingType: item.bindingType,
+    lamination: item.lamination,
+    instructions: item.instructions,
+    files: item.files.map(f => ({
+      id: f.id,
+      name: f.file.name,
+      size: f.file.size,
+      type: f.file.type,
+      status: f.status,
+      // Do NOT pass actual File — not serializable
+      // If uploaded → pass url / key instead
+    })),
+  }));
+
+  return {
+    item: sanitizedItems,           // renamed to match your cart expectation
+    orderMode,
+    deliveryType,
+    customer: {
+      name,
+      phone,
+      address: deliveryType === 'courier' ? address : undefined,
+      pincode: deliveryType === 'courier' ? pincode : undefined,
+      city: deliveryType === 'courier' ? city : undefined,
+      state: deliveryType === 'courier' ? state : undefined,
+    },
+    // Optional: pass pre-calculated totals if you want
+    totalPrintingCost,
+    totalGst,
+    totalWithDelivery,
+    // itemPrices,           // ← if needed in cart
+  };
+};
+
+const handleContinue = () => {
+  if (!name.trim() || !phone.trim()) {
+    alert("Please fill name and phone");
+    return;
+  }
+  if (deliveryType === 'courier' && (!address || !pincode || !city || !state)) {
+    alert("Please complete delivery address");
+    return;
+  }
+
+  const orderData = prepareOrderDataForCart();
+
+  navigate('/cart', { state: orderData });
+};
+
+
+
+
+  // Render file upload for a given item
+
+const renderFileUpload = (item: OrderItem, itemIndex: number) => (
+  <div className="space-y-6">
+    {/* Terms acceptance area – disappears after check */}
+    <div 
+      className={`transition-all duration-300 ease-in-out overflow-hidden ${
+        termsAccepted ? 'max-h-0 opacity-0' : 'max-h-[400px] opacity-100'
+      }`}
+    >
+      <div className="bg-amber-50/60 border border-amber-300 rounded-xl p-5 mb-4">
+        <div className="flex items-start gap-4">
+          <input
+            type="checkbox"
+            id="terms-accept"
+            checked={termsAccepted}
+            onChange={(e) => setTermsAccepted(e.target.checked)}
+            className="mt-1.5 h-5 w-5 accent-primary rounded border-border focus:ring-primary cursor-pointer"
+          />
+          <label 
+            htmlFor="terms-accept" 
+            className="text-sm leading-relaxed text-foreground/90 cursor-pointer select-none"
+          >
+            I agree to the{' '}
+            <Link
+              to="/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary font-medium hover:underline"
+            >
+              Terms & Conditions
+            </Link>
+            . I confirm that uploaded files do not violate copyrights, contain illegal content, or breach any laws/platform rules.
+          </label>
+        </div>
+      </div>
+    </div>
+
+    {/* Confirmation message – appears only after acceptance */}
+    {termsAccepted && (
+      <div 
+        className="bg-green-50/60 border border-green-300 rounded-xl p-4 text-sm text-green-800 flex items-center gap-3 animate-fade-in"
+      >
+        <CheckCircle className="h-5 w-5 text-green-600 shrink-0" />
+        <span>
+          Terms & Conditions accepted — file upload is now enabled
+        </span>
+      </div>
+    )}
+
+    {/* File Upload Area */}
+    <div
+      className={`border-2 rounded-xl p-8 text-center transition-all duration-300 ${
+        termsAccepted
+          ? isDragging && activeItemIndex === itemIndex
+            ? 'border-primary bg-primary/5 shadow-md scale-[1.01]'
+            : 'border-dashed border-border hover:border-primary/60 hover:bg-primary/5 cursor-pointer'
+          : 'border-dashed border-muted-foreground/40 bg-muted/10 opacity-60 cursor-not-allowed'
+      }`}
+      onClick={() => {
+        if (termsAccepted) {
+          setActiveItemIndex(itemIndex);
+          fileInputRef.current?.click();
+        }
+      }}
+      onDragOver={(e) => {
+        if (termsAccepted) {
+          e.preventDefault();
+          setActiveItemIndex(itemIndex);
+          setIsDragging(true);
+        }
+      }}
+      onDragLeave={() => setIsDragging(false)}
+      onDrop={(e) => {
+        if (termsAccepted) {
+          setActiveItemIndex(itemIndex);
+          handleDrop(e);
+        } else {
+          e.preventDefault();
+        }
+      }}
+    >
+      <Upload
+        className={`h-12 w-12 mx-auto mb-4 transition-colors ${
+          termsAccepted && isDragging && activeItemIndex === itemIndex
+            ? 'text-primary'
+            : 'text-muted-foreground'
+        }`}
+      />
+      <p className="font-semibold text-lg text-foreground mb-2">
+        {termsAccepted ? 'Drag & drop files here' : 'Accept Terms First'}
+      </p>
+      <p className="text-muted-foreground mb-3">
+        {termsAccepted
+          ? 'or click to browse files (PDF, DOC, DOCX, JPG, PNG • max 500MB)'
+          : 'Please accept the terms & conditions above to unlock upload'}
+      </p>
+    </div>
+
+    {/* Uploaded files list */}
+    {item.files.length > 0 && (
+      <div className="space-y-3 mt-6">
+        <p className="text-sm font-medium text-foreground">Uploaded Files</p>
+        {item.files.map((f) => (
+          <div 
+            key={f.id}
+            className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg border border-border/50"
+          >
+            {getFileIcon(f.file)}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">{f.file.name}</p>
+              <p className="text-xs text-muted-foreground">
+                {(f.file.size / 1024 / 1024).toFixed(2)} MB
+              </p>
+              {f.status === 'uploading' && (
+                <div className="mt-2 h-1.5 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary rounded-full transition-all duration-300"
+                    style={{ width: `${f.progress}%` }}
+                  />
+                </div>
+              )}
+            </div>
+            {f.status === 'done' && <CheckCircle className="h-5 w-5 text-green-500" />}
+            {f.status === 'error' && <AlertCircle className="h-5 w-5 text-destructive" />}
+            <button
+              onClick={() => removeFile(itemIndex, f.id)}
+              className="p-2 hover:bg-muted rounded-full"
+            >
+              <X className="h-5 w-5 text-muted-foreground" />
+            </button>
+          </div>
+        ))}
+      </div>
+    )}
+
+    {termsAccepted && item.files.length === 0 && (
+      <p className="text-center text-sm text-muted-foreground mt-4">
+        Upload at least one file to proceed to the next step
+      </p>
+    )}
+  </div>
+);
+  // const renderFileUpload = (item: OrderItem, itemIndex: number) => (
+  //   <>
+  //     <div
+  //       className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-200 ${
+  //         isDragging && activeItemIndex === itemIndex ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-muted/30'
+  //       }`}
+  //       onClick={() => { setActiveItemIndex(itemIndex); fileInputRef.current?.click(); }}
+  //       onDragOver={(e) => { e.preventDefault(); setActiveItemIndex(itemIndex); setIsDragging(true); }}
+  //       onDragLeave={() => setIsDragging(false)}
+  //       onDrop={(e) => { setActiveItemIndex(itemIndex); handleDrop(e); }}
+  //     >
+  //       <Upload className={`h-10 w-10 mx-auto mb-3 transition-colors duration-200 ${isDragging && activeItemIndex === itemIndex ? 'text-primary' : 'text-muted-foreground'}`} />
+  //       <p className="font-semibold text-foreground mb-1">Drag & drop files here</p>
+  //       <p className="text-muted-foreground text-sm mb-3">or click to browse</p>
+  //       <p className="text-xs text-muted-foreground">Supported: PDF, DOC, DOCX, JPEG, JPG, PNG • Max 500MB per file</p>
+  //     </div>
+
+  //     {item.files.length > 0 && (
+  //       <div className="mt-4 space-y-2">
+  //         {item.files.map((f) => (
+  //           <div key={f.id} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+  //             {getFileIcon(f.file)}
+  //             <div className="flex-1 min-w-0">
+  //               <p className="text-sm font-medium text-foreground truncate">{f.file.name}</p>
+  //               <p className="text-xs text-muted-foreground">{(f.file.size / 1024 / 1024).toFixed(2)} MB</p>
+  //               {f.status === 'uploading' && (
+  //                 <div className="mt-1 h-1 bg-muted rounded-full overflow-hidden">
+  //                   <div className="h-full bg-primary rounded-full transition-all duration-300" style={{ width: `${f.progress}%` }} />
+  //                 </div>
+  //               )}
+  //             </div>
+  //             {f.status === 'done' && <CheckCircle className="h-4 w-4 text-green-500 shrink-0" />}
+  //             {f.status === 'error' && <AlertCircle className="h-4 w-4 text-destructive shrink-0" />}
+  //             <button onClick={() => removeFile(itemIndex, f.id)} className="p-1 hover:bg-muted rounded transition-colors">
+  //               <X className="h-4 w-4 text-muted-foreground" />
+  //             </button>
+  //           </div>
+  //         ))}
+  //       </div>
+  //     )}
+  //   </>
+  // );
+
+  // if (orderPlaced) {
+  //   return (
+  //     <div className="min-h-screen bg-background">
+  //       <Navbar />
+  //       <div className="pt-24 pb-12 flex items-center justify-center min-h-screen">
+  //         <div className="max-w-md mx-auto px-4 text-center animate-slide-up">
+  //           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+  //             <CheckCircle className="h-10 w-10 text-green-600" />
+  //           </div>
+  //           <h2 className="text-3xl font-black text-foreground mb-3">Order Placed!</h2>
+  //           <p className="text-muted-foreground mb-2">
+  //             Your {orderMode === 'bulk' ? `bulk order (${items.length} items)` : 'order'} has been successfully placed.
+  //           </p>
+  //           <p className="text-muted-foreground mb-6">We'll start printing soon!</p>
+  //           <div className="bg-secondary rounded-xl p-6 mb-6 text-left space-y-3">
+  //             <div className="flex justify-between">
+  //               <span className="text-white/60 text-sm">Order ID</span>
+  //               <span className="text-primary font-bold font-mono">{orderId}</span>
+  //             </div>
+  //             {orderMode === 'bulk' && (
+  //               <div className="flex justify-between">
+  //                 <span className="text-white/60 text-sm">Items</span>
+  //                 <span className="text-white font-bold">{items.length} print jobs</span>
+  //               </div>
+  //             )}
+  //             <div className="flex justify-between">
+  //               <span className="text-white/60 text-sm">Total Amount</span>
+  //               <span className="text-white font-bold">₹{totalWithDelivery.toFixed(2)}</span>
+  //             </div>
+  //             <div className="flex justify-between">
+  //               <span className="text-white/60 text-sm">Status</span>
+  //               <span className="text-yellow-400 font-medium">Pending</span>
+  //             </div>
+  //             <div className="flex justify-between">
+  //               <span className="text-white/60 text-sm">Delivery</span>
+  //               <span className="text-white/80 text-sm">{deliveryType === 'courier' ? 'Courier Delivery' : 'Store Pickup'}</span>
+  //             </div>
+  //           </div>
+  //           <div className="flex flex-col gap-3">
+  //             <Link to={`/tracking?orderId=${orderId}`} className="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-primary/90 transition-all duration-200 text-center">
+  //               Track Order
+  //             </Link>
+  //             <Link to="/" className="w-full border border-border text-foreground font-medium py-3 rounded-lg hover:bg-muted transition-all duration-200 text-center">
+  //               Back to Home
+  //             </Link>
+  //           </div>
+  //         </div>
+  //       </div>
+  //       <Footer />
+  //     </div>
+  //   );
+  // }
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 
   return (
     <div className="min-h-screen bg-background">
@@ -1491,11 +1906,19 @@ const handleContinue = async () => {
         onChange={(e) => e.target.files && handleFiles(e.target.files)} />
 
       <div className="pt-20">
+<<<<<<< HEAD
+=======
+        {/* Header */}
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
         <div className="bg-secondary py-10">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 className="text-3xl sm:text-4xl font-black text-white mb-2">Place Your Order</h1>
             <p className="text-white/60">Upload files, choose print options and proceed to payment</p>
 
+<<<<<<< HEAD
+=======
+            {/* Order Mode Toggle */}
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
             <div className="flex gap-2 mt-4 mb-4">
               <button onClick={() => { setOrderMode('single'); setItems([items[0] || createNewItem()]); setActiveItemIndex(0); }}
                 className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2 ${orderMode === 'single' ? 'bg-primary text-white' : 'bg-white/10 text-white/60 hover:bg-white/20'}`}>
@@ -1507,11 +1930,19 @@ const handleContinue = async () => {
               </button>
             </div>
 
+<<<<<<< HEAD
+=======
+            {/* Steps */}
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
             <div className="flex items-center gap-2 mt-2">
               {[
                 { n: 1, label: 'Upload & Options' },
                 { n: 2, label: 'Delivery Details' },
                 { n: 3, label: 'Add to Cart' },
+<<<<<<< HEAD
+=======
+                // { n: 4, label: 'Payment' },
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
               ].map((s, i) => (
                 <div key={s.n} className="flex items-center gap-2">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
@@ -1529,35 +1960,66 @@ const handleContinue = async () => {
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<<<<<<< HEAD
             <div className="lg:col-span-2 space-y-6">
               {step === 1 && (
                 <div className="space-y-6 animate-slide-up">
+=======
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Step 1 */}
+              {step === 1 && (
+                <div className="space-y-6 animate-slide-up">
+
+                  {/* Bulk Order: Item Tabs */}
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                   {orderMode === 'bulk' && (
                     <div className="bg-white rounded-xl border border-border p-4 shadow-sm">
                       <div className="flex items-center justify-between mb-3">
                         <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
                           <Layers className="h-4 w-4 text-primary" /> Order ({items.length})
                         </h2>
+<<<<<<< HEAD
                         <button onClick={addItem} className="flex items-center gap-1 text-sm font-semibold text-primary hover:text-primary/80 transition-colors">
+=======
+                        <button onClick={addItem}
+                          className="flex items-center gap-1 text-sm font-semibold text-primary hover:text-primary/80 transition-colors">
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                           <Plus className="h-4 w-4" /> Add Item
                         </button>
                       </div>
                       <div className="flex gap-2 flex-wrap">
                         {items.map((item, i) => (
                           <div key={item.id} className="flex items-center gap-1">
+<<<<<<< HEAD
                             <button onClick={() => setActiveItemIndex(i)}
                               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-1.5 ${
                                 activeItemIndex === i ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground hover:bg-muted/80'
+=======
+                            <button
+                              onClick={() => setActiveItemIndex(i)}
+                              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-1.5 ${
+                                activeItemIndex === i
+                                  ? 'bg-primary text-primary-foreground'
+                                  : 'bg-muted text-foreground hover:bg-muted/80'
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                               }`}>
                               {item.files.some(f => f.status === 'done') && <CheckCircle className="h-3 w-3" />}
                               Item {i + 1}
                             </button>
                             {items.length > 1 && (
                               <div className="flex">
+<<<<<<< HEAD
                                 <button onClick={() => duplicateItem(i)} className="p-1 text-muted-foreground hover:text-primary transition-colors">
                                   <Copy className="h-3.5 w-3.5" />
                                 </button>
                                 <button onClick={() => removeItem(i)} className="p-1 text-muted-foreground hover:text-destructive transition-colors">
+=======
+                                <button onClick={() => duplicateItem(i)} className="p-1 text-muted-foreground hover:text-primary transition-colors" title="Duplicate">
+                                  <Copy className="h-3.5 w-3.5" />
+                                </button>
+                                <button onClick={() => removeItem(i)} className="p-1 text-muted-foreground hover:text-destructive transition-colors" title="Remove">
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                                   <Trash2 className="h-3.5 w-3.5" />
                                 </button>
                               </div>
@@ -1568,14 +2030,25 @@ const handleContinue = async () => {
                     </div>
                   )}
 
+<<<<<<< HEAD
+=======
+                  {/* File Upload */}
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                   <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
                     <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
                       <Upload className="h-5 w-5 text-primary" /> Upload Files {orderMode === 'bulk' && <span className="text-sm font-normal text-muted-foreground">(Item {activeItemIndex + 1})</span>}
                     </h2>
+<<<<<<< HEAD
                     {/* {renderFileUpload(activeItem, activeItemIndex)} */}
                     {activeItem && renderFileUpload(activeItem, activeItemIndex)}
                   </div>
 
+=======
+                    {renderFileUpload(activeItem, activeItemIndex)}
+                  </div>
+
+                  {/* Print Preferences */}
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                   <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
                     <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
                       <Calculator className="h-5 w-5 text-primary" /> Print Preferences {orderMode === 'bulk' && <span className="text-sm font-normal text-muted-foreground">(Item {activeItemIndex + 1})</span>}
@@ -1583,6 +2056,10 @@ const handleContinue = async () => {
                     {renderPrintPreferences(activeItem, activeItemIndex)}
                   </div>
 
+<<<<<<< HEAD
+=======
+                  {/* Delivery Option (shared across all items) */}
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                   <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
                     <label className="block text-sm font-semibold text-foreground mb-2">Delivery Option</label>
                     <div className="flex gap-3">
@@ -1595,6 +2072,7 @@ const handleContinue = async () => {
                     </div>
                   </div>
 
+<<<<<<< HEAD
                   <button onClick={() => setStep(2)} disabled={!allItemsHaveFiles || !termsAccepted}
                     className="w-full bg-primary text-primary-foreground font-bold py-4 rounded-xl text-lg hover:bg-primary/90 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                     Continue <ArrowRight className="h-5 w-5" />
@@ -1611,6 +2089,39 @@ const handleContinue = async () => {
                 </div>
               )}
 
+=======
+                  {/* <button onClick={() => setStep(2)} disabled={!allItemsHaveFiles}
+                    className="w-full bg-primary text-primary-foreground font-bold py-4 rounded-xl text-lg hover:bg-primary/90 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    Add to Cart <ArrowRight className="h-5 w-5" />
+                  </button>
+                  {!allItemsHaveFiles && (
+                    <p className="text-center text-muted-foreground text-sm">
+                      {orderMode === 'bulk' ? 'Please upload at least one file per item to continue' : 'Please upload at least one file to continue'}
+                    </p>
+                  )} */}
+
+
+                  <button
+  onClick={() => setStep(2)}
+  disabled={!allItemsHaveFiles || !termsAccepted}  // ← added !termsAccepted
+  className="w-full bg-primary text-primary-foreground font-bold py-4 rounded-xl text-lg hover:bg-primary/90 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+>
+  Add to Cart <ArrowRight className="h-5 w-5" />
+</button>
+{(!allItemsHaveFiles || !termsAccepted) && (
+  <p className="text-center text-muted-foreground text-sm mt-2">
+    {!termsAccepted
+      ? 'Please accept the Terms & Conditions to upload files'
+      : orderMode === 'bulk'
+      ? 'Please upload at least one file per item to continue'
+      : 'Please upload at least one file to continue'}
+  </p>
+)}
+                </div>
+              )}
+
+              {/* Step 2 */}
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
               {step === 2 && (
                 <div className="space-y-6 animate-slide-up">
                   <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
@@ -1638,12 +2149,20 @@ const handleContinue = async () => {
                             <input type="text" value={pincode} onChange={(e) => setPincode(e.target.value)} placeholder="110001"
                               className="w-full px-3 py-2.5 border border-border rounded-md text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" />
                           </div>
+<<<<<<< HEAD
                           <div>
+=======
+                           <div>
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                             <label className="block text-sm font-semibold text-foreground mb-1">City *</label>
                             <input type="text" value={city} onChange={(e) => setCity(e.target.value)} placeholder="city"
                               className="w-full px-3 py-2.5 border border-border rounded-md text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" />
                           </div>
+<<<<<<< HEAD
                           <div>
+=======
+                           <div>
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                             <label className="block text-sm font-semibold text-foreground mb-1">State *</label>
                             <input type="text" value={state} onChange={(e) => setState(e.target.value)} placeholder="state"
                               className="w-full px-3 py-2.5 border border-border rounded-md text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" />
@@ -1654,10 +2173,19 @@ const handleContinue = async () => {
                         <div className="sm:col-span-2 p-4 bg-primary/5 rounded-lg border border-primary/20">
                           <p className="text-sm text-foreground font-medium">📍 Pickup Location</p>
                           <p className="text-sm text-muted-foreground mt-1">Shree Education and Publication Private Limited
+<<<<<<< HEAD
 Mother's School Campus
 Gaddi Maliyan, Jonsganj Road
 Ajmer, Rajasthan – 305001 India</p>
                           <p className="text-sm text-muted-foreground">📞 +917230001405</p>
+=======
+Mother’s School Campus
+Gaddi Maliyan, Jonsganj Road
+Ajmer, Rajasthan – 305001
+India 
+</p>
+<p className="text-sm text-muted-foreground">📞 +917230001405</p>
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                           <p className="text-xs text-muted-foreground mt-2">Mon–Sat: 9AM–8PM</p>
                         </div>
                       )}
@@ -1667,6 +2195,7 @@ Ajmer, Rajasthan – 305001 India</p>
                     <button onClick={() => setStep(1)} className="flex-1 border border-border text-foreground font-medium py-3 rounded-xl hover:bg-muted transition-all duration-200 flex items-center justify-center gap-2">
                       <ArrowLeft className="h-4 w-4" /> Back
                     </button>
+<<<<<<< HEAD
                     <button
                       onClick={handleContinue}
                       disabled={isSaving || !allItemsHaveFiles || !termsAccepted || !name.trim() || !phone.trim() || (deliveryType === 'courier' && (!address.trim() || !pincode.trim() || !city.trim() || !state.trim()))}
@@ -1686,6 +2215,99 @@ Ajmer, Rajasthan – 305001 India</p>
                   </div>
                 </div>
               )}
+=======
+                    {/* <button onClick={() => setStep(3)} disabled={!name || !phone}
+                      className="flex-[2] bg-primary text-primary-foreground font-bold py-3 rounded-xl hover:bg-primary/90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                      Continue <ArrowRight className="h-5 w-5" />
+                    </button> */}
+                    {/* <Link to="/cart" className=''>
+                           <button 
+                      className="flex-[2] bg-primary text-primary-foreground font-bold py-3 px-3 rounded-xl hover:bg-primary/90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                      Continue <ArrowRight className="h-5 w-5" />
+                    </button>
+                    </Link> */}
+
+                    <div className="flex gap-3">
+  {/* <button
+    onClick={() => setStep(1)}
+    className="flex-1 border border-border text-foreground font-medium py-3 rounded-xl hover:bg-muted transition-all duration-200 flex items-center justify-center gap-2"
+  >
+    <ArrowLeft className="h-4 w-4" /> Back
+  </button> */}
+
+  <button
+    onClick={handleContinue}
+    disabled={
+      !allItemsHaveFiles ||
+      !termsAccepted ||
+      !name.trim() ||
+      !phone.trim() ||
+      (deliveryType === 'courier' && (!address.trim() || !pincode.trim() || !city.trim() || !state.trim()))
+    }
+    className="flex-[2] bg-primary text-primary-foreground font-bold py-3 rounded-xl hover:bg-primary/90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 px-4"
+  >
+    Continue to Cart <ArrowRight className="h-5 w-5" />
+  </button>
+</div>
+
+                  </div>
+                </div>
+              )}
+
+
+
+
+             {/* {step === 3 && (
+  <div className="space-y-6 animate-slide-up">
+    <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
+      <h2 className="text-lg font-bold text-foreground mb-4">
+        Review Order
+      </h2>
+
+      <div className="space-y-3 text-sm">
+        <div className="flex justify-between">
+          <span>Name</span>
+          <span className="font-medium">{name}</span>
+        </div>
+        <div className="flex justify-between">
+          <span>Phone</span>
+          <span className="font-medium">{phone}</span>
+        </div>
+        <div className="flex justify-between">
+          <span>Delivery</span>
+          <span className="font-medium">
+            {deliveryType === 'courier' ? 'Courier' : 'Pickup'}
+          </span>
+        </div>
+        <div className="flex justify-between text-lg font-bold pt-3 border-t">
+          <span>Total Amount</span>
+          <span className="text-primary">
+            ₹{totalWithDelivery.toFixed(2)}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div className="flex gap-3">
+      <button
+        onClick={() => setStep(2)}
+        className="flex-1 border border-border text-foreground font-medium py-3 rounded-xl hover:bg-muted transition-all duration-200"
+      >
+        Back
+      </button>
+
+      <button
+        onClick={() => setStep(4)}
+        className="flex-[2] bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary/90 transition-all duration-200"
+      >
+        Proceed to Payment
+      </button>
+    </div>
+  </div>
+)} */}
+
+            
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
             </div>
 
             {/* Order Summary Sidebar */}
@@ -1727,6 +2349,15 @@ Ajmer, Rajasthan – 305001 India</p>
                           <span>GST (5%)</span>
                           <span>₹{totalGst.toFixed(2)}</span>
                         </div>
+<<<<<<< HEAD
+=======
+                        {deliveryType === 'courier' && (
+                          <div className="flex justify-between text-muted-foreground">
+                            {/* <span>Delivery</span> */}
+                            {/* <span>₹80.00</span> */}
+                          </div>
+                        )}
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                       </div>
                     </>
                   ) : (
@@ -1764,6 +2395,15 @@ Ajmer, Rajasthan – 305001 India</p>
                           <span>GST (5%)</span>
                           <span>₹{price.gst.toFixed(2)}</span>
                         </div>
+<<<<<<< HEAD
+=======
+                        {deliveryType === 'courier' && (
+                          <div className="flex justify-between text-muted-foreground">
+                            {/* <span>Delivery</span> */}
+                            {/* <span>₹80.00</span> */}
+                          </div>
+                        )}
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                       </div>
                     </>
                   )}
@@ -1781,8 +2421,15 @@ Ajmer, Rajasthan – 305001 India</p>
           </div>
         </div>
       </div>
+<<<<<<< HEAD
 
       <Footer />
     </div>
   );
 }
+=======
+      <Footer />
+    </div>
+  );
+}
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905

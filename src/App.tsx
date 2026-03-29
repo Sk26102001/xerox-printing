@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import { Toaster } from "@/components/ui/toaster";
 // import { AuthProvider } from "@/context/AuthContext";
 // import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -138,13 +139,19 @@
 
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/context/AuthContext";
+=======
+import { Toaster } from "@/components/ui/toaster";
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+<<<<<<< HEAD
 
 import ProtectedRoute from "@/routes/ProtectedRoute";
 
+=======
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 import Index from "./pages/Index";
 import OrderPage from "./pages/OrderPage";
 import TrackingPage from "./pages/TrackingPage";
@@ -155,6 +162,10 @@ import FloatingPhone from "@/components/FloatingPhone";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import ContactPage from "./pages/ContactPage";
 import AddToCart from "./pages/AddToCart";
+<<<<<<< HEAD
+=======
+import Payment from "./pages/PaymentPage";
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 import PaymentPage from "./pages/PaymentPage";
 
 const queryClient = new QueryClient();
@@ -164,6 +175,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+<<<<<<< HEAD
 
       <AuthProvider>
         <BrowserRouter>
@@ -211,8 +223,32 @@ const App = () => (
           <FloatingPhone />
         </BrowserRouter>
       </AuthProvider>
+=======
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/order" element={<OrderPage />} />
+          <Route path="/tracking" element={<TrackingPage />} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/history" element={<OrderHistoryPage />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          
+          <Route path="/terms" element={<TermsAndConditions />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/cart" element={<AddToCart />} />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+           {/* 🔥 Floating Phone Visible on All Pages */}
+        <FloatingPhone />
+      </BrowserRouter>
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
     </TooltipProvider>
   </QueryClientProvider>
 );
 
+<<<<<<< HEAD
 export default App;
+=======
+export default App;
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
