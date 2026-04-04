@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 // import React from 'react';
 // import { useState, useEffect } from 'react';
@@ -1407,7 +1408,17 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import axios from 'axios';
+<<<<<<< HEAD
 import { useToast } from '@/hooks/use-toast';
+=======
+=======
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { Search, Package, Clock, Printer, CheckCircle, Truck, AlertCircle } from 'lucide-react';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
+>>>>>>> d30b7f6eee18d192f9c0457f9ad1b1c22bbcbe6c
 
 // Update OrderStatus type to match your backend
 type Status = 'pending' | 'processing' | 'printing' | 'ready' | 'dispatched' | 'completed' | 'cancelled';
@@ -1426,9 +1437,12 @@ interface TrackingInfo {
   };
   amount: number;
   deliveryType: string;
+<<<<<<< HEAD
   waybill?: string;
   courierName?: string;
   currentLocation?: string;
+=======
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
 }
 
 // Status steps
@@ -1442,8 +1456,35 @@ const statusSteps: { key: Status; label: string; icon: any; desc: string }[] = [
   { key: 'cancelled', label: 'Cancelled', icon: AlertCircle, desc: 'Your order has been cancelled' },
 ];
 
+<<<<<<< HEAD
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+<<<<<<< HEAD
 const WS_BASE_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:5000';
+=======
+=======
+// Mock order data for demo
+const mockOrders: Record<string, TrackingInfo> = {
+  'BP12345678': {
+    orderId: 'BP12345678',
+    status: 'printing',
+    createdAt: '2026-02-19 10:30 AM',
+    estimatedReady: '2026-02-19 4:00 PM',
+    items: { pages: 200, copies: 2, paperSize: 'A4', printColor: 'B&W', bindingType: 'Perfect Glue' },
+    amount: 425.60,
+    deliveryType: 'Store Pickup',
+  },
+  'BP87654321': {
+    orderId: 'BP87654321',
+    status: 'dispatched',
+    createdAt: '2026-02-18 2:15 PM',
+    estimatedReady: '2026-02-19 12:00 PM',
+    items: { pages: 350, copies: 5, paperSize: 'B5', printColor: 'B&W', bindingType: 'Hardbound' },
+    amount: 1280.50,
+    deliveryType: 'Courier Delivery',
+  },
+};
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
+>>>>>>> d30b7f6eee18d192f9c0457f9ad1b1c22bbcbe6c
 
 const getStatusIndex = (status: Status) => statusSteps.findIndex((s) => s.key === status);
 
@@ -1459,9 +1500,19 @@ export default function TrackingPage() {
   const wsRef = useRef<WebSocket | null>(null);
   const { toast } = useToast();
 
+<<<<<<< HEAD
   const fetchOrderStatus = async (showToastOnChange = false) => {
     if (!orderId.trim()) return false;
     
+=======
+  const handleSearch = async () => {
+    if (!orderId.trim()) return;
+    setLoading(true);
+    setNotFound(false);
+    setTrackingInfo(null);
+
+<<<<<<< HEAD
+>>>>>>> d30b7f6eee18d192f9c0457f9ad1b1c22bbcbe6c
     try {
       const encodedOrderId = encodeURIComponent(orderId);
       const response = await axios.get(`${API_BASE_URL}/order/track/${encodedOrderId}`);
@@ -1510,6 +1561,19 @@ export default function TrackingPage() {
       }
       return false;
     }
+=======
+    // Simulate API call
+    await new Promise((r) => setTimeout(r, 1200));
+
+    const info = mockOrders[orderId.toUpperCase()];
+    if (info) {
+      setTrackingInfo(info);
+    } else {
+      setNotFound(true);
+    }
+    setSearched(true);
+    setLoading(false);
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
   };
 
   const connectWebSocket = () => {
@@ -1624,8 +1688,23 @@ export default function TrackingPage() {
     const urlOrderId = searchParams.get('orderId');
     if (urlOrderId) {
       setOrderId(urlOrderId);
+<<<<<<< HEAD
       setTimeout(() => {
         handleSearch();
+=======
+      // Simulate finding the order
+      setTimeout(() => {
+        setTrackingInfo({
+          orderId: urlOrderId,
+          status: 'pending',
+          createdAt: new Date().toLocaleString(),
+          estimatedReady: 'Tomorrow by 5:00 PM',
+          items: { pages: 100, copies: 1, paperSize: 'A4', printColor: 'B&W', bindingType: 'Perfect Glue' },
+          amount: 250.00,
+          deliveryType: 'Store Pickup',
+        });
+        setSearched(true);
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
       }, 500);
     }
     
@@ -1675,7 +1754,11 @@ export default function TrackingPage() {
                 value={orderId}
                 onChange={(e) => setOrderId(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+<<<<<<< HEAD
                 placeholder="e.g. ORD/0051/28-03-2026"
+=======
+                placeholder="e.g. BP12345678"
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                 className="flex-1 px-4 py-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-mono"
                 disabled={loading}
               />
@@ -1728,7 +1811,15 @@ export default function TrackingPage() {
             )}
             
             <p className="text-xs text-muted-foreground mt-2">
+<<<<<<< HEAD
               Enter your order ID to track your order status in real-time
+=======
+<<<<<<< HEAD
+              Enter your order ID to track your order status
+=======
+              Demo orders: <button onClick={() => setOrderId('BP12345678')} className="text-primary hover:underline">BP12345678</button> or <button onClick={() => setOrderId('BP87654321')} className="text-primary hover:underline">BP87654321</button>
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
+>>>>>>> d30b7f6eee18d192f9c0457f9ad1b1c22bbcbe6c
             </p>
           </div>
 
@@ -1758,6 +1849,7 @@ export default function TrackingPage() {
                       <p className="text-white font-bold text-lg">₹{trackingInfo.amount.toFixed(2)}</p>
                     </div>
                   </div>
+<<<<<<< HEAD
                   {trackingInfo.waybill && (
                     <div className="mt-2 pt-2 border-t border-white/20">
                       <p className="text-white/60 text-xs">Waybill: {trackingInfo.waybill}</p>
@@ -1766,11 +1858,17 @@ export default function TrackingPage() {
                       )}
                     </div>
                   )}
+=======
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                 </div>
 
                 <div className="p-6">
                   {/* Progress Bar */}
                   <div className="relative">
+<<<<<<< HEAD
+=======
+                    {/* Track line */}
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                     <div className="absolute top-5 left-5 right-5 h-0.5 bg-muted" />
                     <div
                       className="absolute top-5 left-5 h-0.5 bg-primary transition-all duration-1000"
@@ -1806,17 +1904,24 @@ export default function TrackingPage() {
                   {/* Current Status Info */}
                   <div className="mt-6 p-4 bg-primary/5 rounded-xl border border-primary/20">
                     <div className="flex items-start gap-3">
+<<<<<<< HEAD
                       {(() => {
                         const IconComponent = statusSteps[currentIndex]?.icon || Clock;
                         return <IconComponent className="h-5 w-5 text-primary mt-0.5 shrink-0" />;
                       })()}
+=======
+                      {React.createElement(statusSteps[currentIndex]?.icon || Clock, { className: 'h-5 w-5 text-primary mt-0.5 shrink-0' })}
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                       <div>
                         <p className="font-bold text-foreground">{statusSteps[currentIndex]?.label}</p>
                         <p className="text-muted-foreground text-sm">{statusSteps[currentIndex]?.desc}</p>
                         <p className="text-xs text-muted-foreground mt-1">Est. Ready: {trackingInfo.estimatedReady}</p>
+<<<<<<< HEAD
                         {trackingInfo.currentLocation && (
                           <p className="text-xs text-muted-foreground mt-1">Location: {trackingInfo.currentLocation}</p>
                         )}
+=======
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
                       </div>
                     </div>
                   </div>
@@ -1879,4 +1984,11 @@ export default function TrackingPage() {
       <Footer />
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+
+// Need to import React for createElement
+import React from 'react';
+>>>>>>> 5eb1a3a3e4ec7d52cb2b00ac95ce3a0bf9e82905
